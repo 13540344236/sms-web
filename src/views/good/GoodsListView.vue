@@ -72,7 +72,7 @@
             <el-input v-model="ruleForm.currentStock"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品规格" prop="lowLimitStock">
+          <el-form-item label="最低库存" prop="lowLimitStock">
             <el-input v-model="ruleForm.lowLimitStock"></el-input>
           </el-form-item>
 
@@ -173,20 +173,16 @@ export default {
           { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
         ],
         category: [
-          { required: true, message: '商品类别', trigger: 'blur' },
+          { required: true, message: '请输入商品类别', trigger: 'blur' },
           { min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
         ],
         salePrice: [
-          { required: true, message: '销售价格', trigger: 'blur' },
+          { required: true, message: '请输入销售价格', trigger: 'blur' },
           { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
         ],
         purchasePrice: [
-          { required: true, message: '销售价格', trigger: 'blur' },
+          { required: true, message: '请输入采购价格', trigger: 'blur' },
           { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
-        ],
-        goodsSpecification: [
-          { message: '商品规格', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
         ]
       }
     }
