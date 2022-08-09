@@ -5,6 +5,7 @@
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
 <!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
@@ -85,39 +86,35 @@
 <!--   编辑商品   -->
       <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
 
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-
-          <el-form-item label="商品ID" prop="id">
-            <el-input v-model="ruleForm.id" :disabled="true"></el-input>
-          </el-form-item>
+        <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
           <el-form-item label="商品类别" prop="category">
-            <el-input v-model="ruleForm.category"></el-input>
+            <el-input v-model="editForm.category"></el-input>
           </el-form-item>
 
           <el-form-item label="商品名称" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="editForm.name"></el-input>
           </el-form-item>
 
           <el-form-item label="商品图片的url" prop="url">
-            <el-input v-model="ruleForm.url"></el-input>
+            <el-input v-model="editForm.url"></el-input>
           </el-form-item>
 
           <el-form-item label="销售价格" prop="salePrice">
-            <el-input v-model="ruleForm.salePrice"></el-input>
+            <el-input v-model="editForm.salePrice"></el-input>
           </el-form-item>
 
           <el-form-item label="采购价格" prop="purchasePrice">
-            <el-input v-model="ruleForm.purchasePrice"></el-input>
+            <el-input v-model="editForm.purchasePrice"></el-input>
           </el-form-item>
 
           <el-form-item label="商品规格" prop="goodsSpecification">
-            <el-input v-model="ruleForm.goodsSpecification"></el-input>
+            <el-input v-model="editForm.goodsSpecification"></el-input>
           </el-form-item>
 
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-            <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
+            <el-button type="primary" @click="handleEdit(editForm.id)">确 定</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -149,6 +146,17 @@ export default {
       dialogFormVisible:false,
       dialogFormVisibleEdit:false,
       ruleForm: {
+        id:'',
+        url: '',
+        name: '',
+        salePrice: '',
+        purchasePrice:'',
+        category: '',
+        lowLimitStock: '',
+        currentStock:'',
+        goodsSpecification:''
+      },
+      editForm: {
         id:'',
         url: '',
         name: '',
@@ -263,13 +271,13 @@ export default {
 
 // 编辑商品
     edit(val){
-      Object.assign(this.ruleForm,val)
+      Object.assign(this.editForm,val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的品牌数据');
       let url = 'http://localhost:9091/goods/' + id + '/edit'
-      this.axios.post(url,this.ruleForm).then((response) => {
+      this.axios.post(url,this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -284,6 +292,9 @@ export default {
         }
         this.loadGoods();
       });
+    },
+    exportExcel(){
+      location.href = "http://localhost:9091/goods/exportExcel"
     }
   },
   created() {
