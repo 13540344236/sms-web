@@ -85,7 +85,7 @@
                 <span>商品分类</span>
               </el-menu-item>
               <el-menu-item index="/sms/goodsBad/list">
-                <i class="el-icon-s-good"></i>
+                <i class="el-icon-s-goods"></i>
                 <span>商品报损</span>
               </el-menu-item>
               <el-menu-item index="/sms/goodsMax/list">
