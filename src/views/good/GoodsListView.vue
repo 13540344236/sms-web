@@ -5,6 +5,8 @@
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+<!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
     <div>
@@ -13,7 +15,8 @@
 <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
 <!--            </el-breadcrumb>-->
 
-      <el-table :data="tableData" border style="width: 100%;text-align: center">
+      <el-table :data="tableData" border
+                style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="id" label="商品ID" width="100"></el-table-column>
         <el-table-column prop="url" label="商品图片"></el-table-column>
@@ -118,6 +121,11 @@
       </el-dialog>
     </div>
 
+<!--  批量删除  -->
+    <div style="margin: 15px 0">
+      <el-button type="danger" @click="batchDelete">批量删除</el-button>
+    </div>
+
 <!--  分页  -->
     <div style="text-align: center;margin: 20px">
       <el-pagination background layout="total,prev, pager, next, jumper"
@@ -139,6 +147,8 @@ export default {
   },
   data() {
     return {
+      // 勾选的数据
+      multipleSelection: [],
       tableData: [],
       input:'',
       dialogFormVisible:false,
@@ -226,6 +236,32 @@ export default {
       });
     },
 
+// 批量删除
+    handleSelectionChange(val) {
+      console.log(val);
+      this.multipleSelection = val
+    },
+    batchDelete() {
+      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.multipleSelection.forEach((res,i) => {
+          let url = 'http://localhost:9091/goods/' + res.id + '/delete'
+          this.axios.post(url).then((response) => {
+            if (response.data.code === 20000 && (i+1) ===this.multipleSelection.length) {
+              this.$message({
+                message: '删除品牌成功！',
+                type: 'success'
+              })
+            }
+            this.loadGoods();
+          })
+        })
+      }).catch(() => {
+      });
+    },
 // 添加商品
     add(){
       this.dialogFormVisible = true
@@ -286,6 +322,9 @@ export default {
         }
         this.loadGoods();
       });
+    },
+    exportExcel(){
+      location.href = "http://localhost:9091/goods/exportExcel"
     }
   },
   created() {
