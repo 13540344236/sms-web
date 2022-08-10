@@ -83,22 +83,22 @@ const routes = [
       },
 
       {
-        path:'purchaes/list',
-        component: () => import('../views/purchase/PurchaesListView'),
+        path:'purchase/list',
+        component: () => import('../views/purchase/PurchaseListView.vue'),
         meta: {
           title: '超市库存管理平台 -- 进货入库'
         }
       },
       {
-        path:'rethrnPurchaes/list',
-        component: () => import('../views/purchase/RethrnPurchaesListView'),
+        path:'refundPurchase/list',
+        component: () => import('../views/purchase/RefundPurchaseListView.vue'),
         meta: {
           title: '超市库存管理平台 -- 退货出库'
         }
       },
       {
-        path:'salePurchaes/list',
-        component: () => import('../views/purchase/SalePurchaesListView'),
+        path:'salePurchase/list',
+        component: () => import('../views/purchase/SalePurchaseListView.vue'),
         meta: {
           title: '超市库存管理平台 -- 销售出库'
         }
