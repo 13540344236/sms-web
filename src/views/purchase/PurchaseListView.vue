@@ -13,10 +13,16 @@
       </el-select>
       <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+      <!--  批量删除  -->
+        <el-button type="danger" @click="batchDelete">批量删除</el-button>
+
     </div>
 
     <div>
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table :data="tableData" border
+                style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
         <el-table-column prop="logo" label="商品logo" header-align="center" width="140"></el-table-column>
         <el-table-column prop="name" label="商品名称" align="center" width="100"></el-table-column>
@@ -108,26 +114,28 @@
       </el-dialog>
     </div>
     <!--  分页  -->
-<!--    <div style="text-align: center;margin: 20px">-->
-<!--      <el-pagination background layout="total,prev, pager, next, jumper"-->
-<!--                     :total="total" :page-size="pageSize"></el-pagination>-->
-<!--    </div>-->
+    <div style="text-align: center;margin: 20px">
+      <el-pagination background layout="total,prev, pager, next, jumper"
+                     :total="total" :page-size="pageSize"></el-pagination>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  // props: {
-  //   total: {
-  //     type: Number,
-  //     default: 10
-  //   },
-  //   pageSize: {
-  //     type: Number,
-  //     default: 10
-  //   }
-  // },
+  props: {
+    total: {
+      type: Number,
+      default: 10
+    },
+    pageSize: {
+      type: Number,
+      default: 10
+    }
+  },
   data() {
     return {
+      //勾选要删除的数据
+      multipleSelection: [],
       tableData: [],
       wd:'',
       value:'',
@@ -172,6 +180,9 @@ export default {
     };
   },
   methods: {
+    exportExcel(){
+      location.href = "http://localhost:9091/purchases/exportExcel"
+    },
     search(){
       //跳转到结果页面
       location.href="/purchases/list";
@@ -215,7 +226,32 @@ export default {
         this.loadPurchases();
       });
     },
-
+// 批量删除
+    handleSelectionChange(val) {
+      console.log(val);
+      this.multipleSelection = val
+    },
+    batchDelete() {
+      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.multipleSelection.forEach((res,i) => {
+          let url = 'http://localhost:9091/purchases/' + res.id + '/delete'
+          this.axios.post(url).then((response) => {
+            if (response.data.code === 20000 && (i+1) ===this.multipleSelection.length) {
+              this.$message({
+                message: '删除品牌成功！',
+                type: 'success'
+              })
+            }
+            this.loadPurchases();
+          })
+        })
+      }).catch(() => {
+      });
+    },
 // 添加商品
     add(){
       this.dialogFormVisible = true
