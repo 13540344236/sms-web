@@ -1,10 +1,10 @@
 <template>
-<h1>这是进货入库</h1>
+<h1>这是退货</h1>
 </template>
 
 <script>
 export default {
-  name: "PurchaesListView"
+  name: "RefundPurchaseListView"
 }
 </script>
 

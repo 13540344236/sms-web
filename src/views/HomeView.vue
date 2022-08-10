@@ -105,15 +105,15 @@
                 <span>库存管理</span>
               </template>
               <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/purchaes/list">
+              <el-menu-item index="/sms/purchase/list">
                 <i class="el-icon-circle-plus"></i>
                 <span>进货库存</span>
               </el-menu-item>
-              <el-menu-item index="/sms/rethrnPurchaes/list">
+              <el-menu-item index="/sms/refundPurchase/list">
                 <i class="el-icon-remove"></i>
                 <span>退货出库</span>
               </el-menu-item>
-              <el-menu-item index="/sms/salePurchaes/list">
+              <el-menu-item index="/sms/salePurchase/list">
                 <i class="el-icon-remove-outline"></i>
                 <span>销售出库</span>
               </el-menu-item>
