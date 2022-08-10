@@ -6,7 +6,9 @@
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
       <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
-<!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
+      <!--  批量删除  -->
+      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+
     </div>
 
     <div>
@@ -88,6 +90,7 @@
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
+          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -133,10 +136,7 @@
       </el-dialog>
     </div>
 
-<!--  批量删除  -->
-    <div style="margin: 15px 0">
-      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
-    </div>
+
 
 <!--  分页  -->
     <div style="text-align: center;margin: 20px">
@@ -162,6 +162,7 @@ export default {
       // 勾选的数据
       multipleSelection: [],
       tableData: [],
+      fileList: [],
       input:'',
       dialogFormVisible:false,
       dialogFormVisibleEdit:false,
@@ -353,6 +354,8 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
   },
+
+
   created() {
     console.log('vue created')
   },
