@@ -49,10 +49,6 @@
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品图片的url" prop="url">
-            <el-input v-model="ruleForm.url"></el-input>
-          </el-form-item>
-
           <el-form-item label="商品类别" prop="category">
             <el-input v-model="ruleForm.category"></el-input>
           </el-form-item>
@@ -73,9 +69,25 @@
             <el-input v-model="ruleForm.currentStock"></el-input>
           </el-form-item>
 
-          <el-form-item label="最低库存" prop="lowLimitStock">
+          <el-form-item label="库存下限" prop="lowLimitStock">
             <el-input v-model="ruleForm.lowLimitStock"></el-input>
           </el-form-item>
+
+<!--     上传图片     -->
+          <el-form-item label="商品图片" prop="url">
+            <el-upload
+                class="upload-demo"
+                action="http://localhost:9091/goods/upload"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -123,7 +135,7 @@
 
 <!--  批量删除  -->
     <div style="margin: 15px 0">
-      <el-button type="danger" @click="batchDelete">批量删除</el-button>
+      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
     </div>
 
 <!--  分页  -->
@@ -325,7 +337,21 @@ export default {
     },
     exportExcel(){
       location.href = "http://localhost:9091/goods/exportExcel"
-    }
+    },
+
+// 上传图片
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    },
   },
   created() {
     console.log('vue created')
