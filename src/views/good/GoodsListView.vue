@@ -5,6 +5,8 @@
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+<!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
     <div>
@@ -320,6 +322,9 @@ export default {
         }
         this.loadGoods();
       });
+    },
+    exportExcel(){
+      location.href = "http://localhost:9091/goods/exportExcel"
     }
   },
   created() {

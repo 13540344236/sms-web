@@ -4,7 +4,12 @@
     <el-container>
       <!--   整个页面的上半部分，即顶栏部分   -->
       <el-header class="layout-header">
-        <h2 style="margin: 15px">聚贤庄超市后台管理系统</h2>
+
+        <h1 style="color:white;margin: 15px">聚贤庄超市后台管理系统
+          <span style="float: right;font-size: 15px">欢迎xxx
+                    &nbsp&nbsp<a href="javascript:void(0)" @click="logout()">退出登录</a>
+          </span>
+        </h1>
       </el-header>
       <!--   整个页面的下半部分，是一个容器   -->
       <el-container class="layout-body">
@@ -105,15 +110,15 @@
                 <span>库存管理</span>
               </template>
               <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/purchaes/list">
+              <el-menu-item index="/sms/purchase/list">
                 <i class="el-icon-circle-plus"></i>
                 <span>进货库存</span>
               </el-menu-item>
-              <el-menu-item index="/sms/rethrnPurchaes/list">
+              <el-menu-item index="/sms/refundPurchase/list">
                 <i class="el-icon-remove"></i>
                 <span>退货出库</span>
               </el-menu-item>
-              <el-menu-item index="/sms/salePurchaes/list">
+              <el-menu-item index="/sms/salePurchase/list">
                 <i class="el-icon-remove-outline"></i>
                 <span>销售出库</span>
               </el-menu-item>
