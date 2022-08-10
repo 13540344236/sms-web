@@ -18,17 +18,19 @@
     <div>
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
-        <el-table-column prop="logo" label="商品logo" header-align="center"></el-table-column>
-        <el-table-column prop="name" label="商品名称" align="center"></el-table-column>
-        <el-table-column prop="goodsCategory" label="商品类别" align="center"></el-table-column>
-        <el-table-column prop="goodsSpecification" label="商品规格" align="center"></el-table-column>
-        <el-table-column prop="warehousingQuantity" label="入库数量" header-align="center"></el-table-column>
-        <el-table-column prop="supplier" label="供应商" header-align="center"></el-table-column>
-        <el-table-column prop="operator" label="经办人" header-align="center"></el-table-column>
-        <el-table-column prop="gmtCreate" label="操作时间" header-align="center"></el-table-column>
-        <el-table-column prop="purchaseDocumentPicture" label="进货单据" header-align="center"></el-table-column>
-        <el-table-column label="操作" width="100" align="center">
+        <el-table-column prop="logo" label="商品logo" header-align="center" width="140"></el-table-column>
+        <el-table-column prop="name" label="商品名称" align="center" width="100"></el-table-column>
+        <el-table-column prop="goodsCategory" label="商品类别" align="center" width="100"></el-table-column>
+        <el-table-column prop="goodsSpecification" label="商品规格" align="center" width="80"></el-table-column>
+        <el-table-column prop="warehousingQuantity" label="入库数量" header-align="center" width="100"></el-table-column>
+        <el-table-column prop="supplier" label="供应商" header-align="center" width="80"></el-table-column>
+        <el-table-column prop="operator" label="经办人" header-align="center" width="80"></el-table-column>
+        <el-table-column prop="gmtCreate" label="操作时间" header-align="center" width="140"></el-table-column>
+        <el-table-column prop="purchaseDocumentPicture" label="进货单据" header-align="center" width="140"></el-table-column>
+        <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
+            <el-button size="mini" type="primary"
+                @click="edit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger"
                        @click="openDeleteConfirm(scope.row.id)">删除</el-button>
           </template>
@@ -37,7 +39,6 @@
 
       <!--  添加商品  -->
       <el-dialog title="添加商品" :visible.sync="dialogFormVisible" width="50%">
-
         <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
           <el-form-item label="商品logo的URL" prop="logo">
             <el-input v-model="ruleForm.logo"></el-input>
@@ -69,32 +70,82 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+
+      <!--   编辑商品   -->
+      <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
+
+        <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+
+          <el-form-item label="商品logo的URL" prop="logo">
+            <el-input v-model="editForm.logo"></el-input>
+          </el-form-item>
+          <el-form-item label="商品名称" prop="name">
+            <el-input v-model="editForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="商品类别" prop="goodsCategory">
+            <el-input v-model="editForm.goodsCategory"></el-input>
+          </el-form-item>
+          <el-form-item label="商品规格" prop="goodsSpecification">
+            <el-input v-model="editForm.goodsSpecification"></el-input>
+          </el-form-item>
+          <el-form-item label="入库数量" prop="warehousingQuantity">
+            <el-input v-model="editForm.warehousingQuantity"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商" prop="supplier">
+            <el-input v-model="editForm.supplier"></el-input>
+          </el-form-item>
+          <el-form-item label="经办人" prop="operator">
+            <el-input v-model="editForm.operator"></el-input>
+          </el-form-item>
+          <el-form-item label="进货单据图片" prop="purchaseDocumentPicture">
+            <el-input v-model="editForm.purchaseDocumentPicture"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+            <el-button type="primary" @click="handleEdit(editForm.id)">确 定</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
     <!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
-    </div>
+<!--    <div style="text-align: center;margin: 20px">-->
+<!--      <el-pagination background layout="total,prev, pager, next, jumper"-->
+<!--                     :total="total" :page-size="pageSize"></el-pagination>-->
+<!--    </div>-->
   </div>
 </template>
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
+  // props: {
+  //   total: {
+  //     type: Number,
+  //     default: 10
+  //   },
+  //   pageSize: {
+  //     type: Number,
+  //     default: 10
+  //   }
+  // },
   data() {
     return {
       tableData: [],
-      input:'',
+      wd:'',
+      value:'',
       dialogFormVisible:false,
+      dialogFormVisibleEdit:false,
       ruleForm: {
+        id:'',
+        logo: '',
+        name: '',
+        goodsCategory: '',
+        goodsSpecification: '',
+        warehousingQuantity: '',
+        supplier: '',
+        operator: '',
+        purchaseDocumentPicture: ''
+      },
+      editForm: {
+        id:'',
         logo: '',
         name: '',
         goodsCategory: '',
@@ -200,6 +251,29 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    //编辑商品
+    edit(val){
+      Object.assign(this.editForm,val)
+      this.dialogFormVisibleEdit = true;
+    },
+    handleEdit(id) {
+      console.log('将编辑id = ' + id + '的品牌数据');
+      let url = 'http://localhost:9091/purchases/' + id + '/edit'
+      this.axios.post(url,this.editForm).then((response) => {
+        let json = response.data;
+        console.log(response.data.data)
+        if (json.code === 20000) {
+          this.$message({
+            message: '编辑品牌成功！',
+            type: 'success'
+          });
+          this.dialogFormVisibleEdit = false;
+        } else {
+          this.$message.error(response.data.message);
+        }
+        this.loadPurchases();
+      });
     }
   },
   created() {
