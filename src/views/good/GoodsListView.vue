@@ -3,7 +3,7 @@
     <h3 style="margin: 20px 0">商品管理</h3>
     <div style="display: flex;margin: 20px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary">搜索</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="select(id)">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
       <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
       <!--  批量删除  -->
@@ -12,10 +12,10 @@
     </div>
 
     <div>
-<!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
-<!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
-<!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
-<!--            </el-breadcrumb>-->
+      <!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
+      <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
+      <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
+      <!--            </el-breadcrumb>-->
 
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
@@ -34,11 +34,13 @@
             <el-button
                 size="mini"
                 type="primary"
-                @click="edit(scope.row)">编辑</el-button>
+                @click="edit(scope.row)">编辑
+            </el-button>
             <el-button
                 size="mini"
                 type="danger"
-                @click="openDeleteConfirm(scope.row.id)">删除</el-button>
+                @click="openDeleteConfirm(scope.row.id)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +88,7 @@
         </el-form>
       </el-dialog>
 
-<!--   编辑商品   -->
+      <!--   编辑商品   -->
       <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
 
         <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -123,76 +125,76 @@
       </el-dialog>
     </div>
 
-<!--  批量删除  -->
-    <div style="margin: 15px 0">
-      <el-button type="danger" @click="batchDelete">批量删除</el-button>
-    </div>
 
-<!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
+
+    <!--  分页  -->
+    <div class="block" style="margin: 20px">
+      <el-pagination
+          style="text-align: center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+      </el-pagination>
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
   data() {
     return {
       // 勾选的数据
       multipleSelection: [],
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
+
       tableData: [],
-      input:'',
-      dialogFormVisible:false,
-      dialogFormVisibleEdit:false,
+      input: '',
+      dialogFormVisible: false,
+      dialogFormVisibleEdit: false,
       ruleForm: {
-        id:'',
+        id: '',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice:'',
+        purchasePrice: '',
         category: '',
         lowLimitStock: '',
-        currentStock:'',
-        goodsSpecification:''
+        currentStock: '',
+        goodsSpecification: ''
       },
       editForm: {
-        id:'',
+        id: '',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice:'',
+        purchasePrice: '',
         category: '',
         lowLimitStock: '',
-        currentStock:'',
-        goodsSpecification:''
+        currentStock: '',
+        goodsSpecification: ''
       },
       rules: {
         name: [
-          { required: true, message: '请输入商品名称', trigger: 'blur' },
-          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+          {required: true, message: '请输入商品名称', trigger: 'blur'},
+          {min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur'}
         ],
         category: [
-          { required: true, message: '请输入商品类别', trigger: 'blur' },
-          { min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+          {required: true, message: '请输入商品类别', trigger: 'blur'},
+          {min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
         ],
         salePrice: [
-          { required: true, message: '请输入销售价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
+          {required: true, message: '请输入销售价格', trigger: 'blur'},
+          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
         ],
         purchasePrice: [
-          { required: true, message: '请输入采购价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
+          {required: true, message: '请输入采购价格', trigger: 'blur'},
+          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
         ]
       }
     }
@@ -234,7 +236,7 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
 
@@ -249,10 +251,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.multipleSelection.forEach((res,i) => {
+        this.multipleSelection.forEach((res, i) => {
           let url = 'http://localhost:9091/goods/' + res.id + '/delete'
           this.axios.post(url).then((response) => {
-            if (response.data.code === 20000 && (i+1) ===this.multipleSelection.length) {
+            if (response.data.code === 20000 && (i + 1) === this.multipleSelection.length) {
               this.$message({
                 message: '删除品牌成功！',
                 type: 'success'
@@ -265,7 +267,7 @@ export default {
       });
     },
 // 添加商品
-    add(){
+    add() {
       this.dialogFormVisible = true
     },
     submitForm(formName) {
@@ -273,21 +275,21 @@ export default {
         if (valid) {
           // alert('submit!');
           let url = 'http://localhost:9091/goods/add-new';
-          console.log('url >>>'+url);
+          console.log('url >>>' + url);
           console.log('data >>>');
           console.log("参数:" + this.ruleForm);
-          this.axios.post(url,this.ruleForm).then((response) => {
+          this.axios.post(url, this.ruleForm).then((response) => {
             console.log(response.data);
-            if (response.data.code === 20000){
+            if (response.data.code === 20000) {
               this.$message({
                 message: '添加商品成功！',
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadGoods();
-            }else {
+            } else {
               this.$message.error(response.data.message);
             }
+            this.pageAll()
           }).catch(function (error) {
             console.log('响应结果失败!')
           })
@@ -302,14 +304,14 @@ export default {
     },
 
 // 编辑商品
-    edit(val){
-      Object.assign(this.editForm,val)
+    edit(val) {
+      Object.assign(this.editForm, val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的品牌数据');
       let url = 'http://localhost:9091/goods/' + id + '/edit'
-      this.axios.post(url,this.editForm).then((response) => {
+      this.axios.post(url, this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -318,23 +320,50 @@ export default {
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadGoods();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
-    exportExcel(){
+
+// 到处Excel报表
+    exportExcel() {
       location.href = "http://localhost:9091/goods/exportExcel"
+    },
+
+// 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/goods/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
+    },
+
+    select(id){
+
     }
   },
   created() {
     console.log('vue created')
+    this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
+    this.pageAll();
   }
 }
 </script>
