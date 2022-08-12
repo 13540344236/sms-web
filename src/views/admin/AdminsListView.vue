@@ -13,7 +13,7 @@
       <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
       <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
       <!--            </el-breadcrumb>-->
-      <el-dialog title="编辑员工" :visible.sync="dialogFormVisibleSelect" width="90%">
+      <el-dialog title="搜索员工" :visible.sync="dialogFormVisibleSelect" width="90%">
       <el-table :data="selectData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
         <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>

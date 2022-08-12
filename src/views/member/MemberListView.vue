@@ -99,33 +99,26 @@
 
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
-          <el-form-item label="员工ID" prop="id">
+          <el-form-item label="会员ID" prop="id">
             <el-input v-model="ruleForm.id" :disabled="true"></el-input>
           </el-form-item>
 
-          <el-form-item label="员工名称" prop="staffName">
-            <el-input v-model="ruleForm.staffName"></el-input>
-          </el-form-item>
-
-          <el-form-item label="员工性别" prop="gender">
-            <el-input v-model="ruleForm.gender"></el-input>
+          <el-form-item label="会员名称" prop="gender">
+            <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
 
           <el-form-item label="员工电话号码" prop="phone">
             <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
 
-          <el-form-item label="身份证号" prop="idNumber">
-            <el-input v-model="ruleForm.idNumber"></el-input>
+          <el-form-item label="支付方式" prop="idNumber">
+            <el-input v-model="ruleForm.paymentMethod"></el-input>
           </el-form-item>
 
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+          <el-form-item label="购买商店地址" prop="email">
+            <el-input v-model="ruleForm.address"></el-input>
           </el-form-item>
 
-          <el-form-item label="简介" prop="description">
-            <el-input v-model="ruleForm.description"></el-input>
-          </el-form-item>
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
             <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
