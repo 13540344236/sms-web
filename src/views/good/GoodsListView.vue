@@ -172,8 +172,8 @@ export default {
       pageSize: 10,
       totalCount: 0,
 
-      tableData: [],
-      filelist:[],
+      tableData: [],//图片返回url需要使用
+      filelist:[],//图片数组
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
