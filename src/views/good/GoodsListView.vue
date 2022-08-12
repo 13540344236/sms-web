@@ -64,19 +64,6 @@
             <el-input v-model="ruleForm.category"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品类别">
-            <el-select v-model="ruleForm.category" placeholder="商品类别">
-              <el-option label="果蔬" value="果蔬"></el-option>
-              <el-option label="油粮" value="油粮"></el-option>
-              <el-option label="肉类" value="肉类"></el-option>
-              <el-option label="厨具" value="厨具"></el-option>
-              <el-option label="电器" value="电器"></el-option>
-              <el-option label="床上用品" value="床上用品"></el-option>
-              <el-option label="生猛海鲜" value="生猛海鲜"></el-option>
-              <el-option label="生活用品" value="生活用品"></el-option>
-            </el-select>
-          </el-form-item>
-
           <el-form-item label="采购价格" prop="purchasePrice">
             <el-input v-model="ruleForm.purchasePrice"></el-input>
           </el-form-item>
@@ -126,10 +113,6 @@
 
           <el-form-item label="商品类别" prop="category">
             <el-input v-model="editForm.category"></el-input>
-          </el-form-item>
-
-          <el-form-item label="商品类别id" prop="categoryId">
-            <el-input v-model="editForm.categoryId"></el-input>
           </el-form-item>
 
           <el-form-item label="商品名称" prop="name">
@@ -202,7 +185,6 @@ export default {
         salePrice: '',
         purchasePrice:'',
         category: '',
-        categoryId:'',
         lowLimitStock: '',
         currentStock:'',
         goodsSpecification:''
@@ -214,7 +196,6 @@ export default {
         salePrice: '',
         purchasePrice:'',
         category: '',
-        categoryId:'',
         lowLimitStock: '',
         currentStock:'',
         goodsSpecification:''
