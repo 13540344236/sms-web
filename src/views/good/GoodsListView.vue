@@ -20,8 +20,14 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="商品ID" width="100"></el-table-column>
-        <el-table-column prop="url" label="商品图片"></el-table-column>
+             <el-table-column  label="商品图片"width="80">
+          <template slot-scope="scope">
+            <el-image
+                style="width: 60px; height: 60px"
+                :src="scope.row.url"
+                :fit="fit" />
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
         <el-table-column prop="salePrice" label="销售价格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice" label="采购价格" width="140"></el-table-column>
@@ -53,10 +59,6 @@
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品图片的url" prop="url">
-            <el-input v-model="ruleForm.url"></el-input>
-          </el-form-item>
-
           <el-form-item label="商品类别" prop="category">
             <el-input v-model="ruleForm.category"></el-input>
           </el-form-item>
@@ -77,8 +79,23 @@
             <el-input v-model="ruleForm.currentStock"></el-input>
           </el-form-item>
 
-          <el-form-item label="最低库存" prop="lowLimitStock">
+          <el-form-item label="库存下限" prop="lowLimitStock">
             <el-input v-model="ruleForm.lowLimitStock"></el-input>
+          </el-form-item>
+
+<!--     上传图片     -->
+          <el-form-item label="商品图片" prop="url">
+            <el-upload
+                action="http://localhost:9091/goods/upload"
+                name="picFile"
+                list-type="picture-card"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove">
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
           </el-form-item>
 
           <el-form-item>
@@ -88,7 +105,7 @@
         </el-form>
       </el-dialog>
 
-      <!--   编辑商品   -->
+<!--   编辑商品   -->
       <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
 
         <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -146,6 +163,8 @@
 export default {
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       // 勾选的数据
       multipleSelection: [],
       // 分页
@@ -154,53 +173,55 @@ export default {
       totalCount: 0,
 
       tableData: [],
+      filelist:[],
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
       ruleForm: {
-        id: '',
+        id:'',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice: '',
+        purchasePrice:'',
         category: '',
         lowLimitStock: '',
-        currentStock: '',
-        goodsSpecification: ''
+        currentStock:'',
+        goodsSpecification:''
       },
       editForm: {
-        id: '',
+        id:'',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice: '',
+        purchasePrice:'',
         category: '',
         lowLimitStock: '',
-        currentStock: '',
-        goodsSpecification: ''
+        currentStock:'',
+        goodsSpecification:''
       },
       rules: {
         name: [
-          {required: true, message: '请输入商品名称', trigger: 'blur'},
-          {min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur'}
+          { required: true, message: '请输入商品名称', trigger: 'blur' },
+          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
         ],
         category: [
-          {required: true, message: '请输入商品类别', trigger: 'blur'},
-          {min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+          { required: true, message: '请输入商品类别', trigger: 'blur' },
+          { min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
         ],
         salePrice: [
-          {required: true, message: '请输入销售价格', trigger: 'blur'},
-          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
+          { required: true, message: '请输入销售价格', trigger: 'blur' },
+          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
         ],
         purchasePrice: [
-          {required: true, message: '请输入采购价格', trigger: 'blur'},
-          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
+          { required: true, message: '请输入采购价格', trigger: 'blur' },
+          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
-    loadGoods: function () {
+
+/*    loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/goods';
       console.log('url = ' + url);
@@ -212,7 +233,7 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
+    },*/
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -267,7 +288,7 @@ export default {
       });
     },
 // 添加商品
-    add() {
+    add(){
       this.dialogFormVisible = true
     },
     submitForm(formName) {
@@ -326,13 +347,11 @@ export default {
         this.pageAll();
       });
     },
-
-// 到处Excel报表
-    exportExcel() {
+    exportExcel(){
       location.href = "http://localhost:9091/goods/exportExcel"
     },
 
-// 分页查询
+    // 分页查询
     pageAll() {
       console.log('pageAll()')
       this.axios.get('http://localhost:9091/goods/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
@@ -355,14 +374,43 @@ export default {
 
     select(id){
 
+    },
+
+
+
+
+// 上传图片
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+      //发请求告诉服务器删除文件夹里面的文件
+      //得到要删除的文件名
+      let fileName= file.response;
+      console.log("文件名:"+fileName);
+      axios.get("/remove?fileName="+fileName).then(function (response) {
+        console.log("服务器文件删除完成!");
+      })
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     }
   },
+
+
   created() {
     console.log('vue created')
+    this.axios.get('http://localhost:9091/goods').then((response) => {
+      if (response.data.code === 20000) {
+        this.tableData = response.data.data;
+      } else {
+        this.$message.error(response.data.message);
+      }
+    })
     this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
+    this.loadGoods();
     this.pageAll();
   }
 }
