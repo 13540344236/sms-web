@@ -32,7 +32,7 @@
         <el-table-column prop="salePrice" label="销售价格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice" label="采购价格" width="140"></el-table-column>
         <el-table-column prop="category" label="商品类别" width="140"></el-table-column>
-        <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
+        <el-table-column prop="goodsSpecification" label="商品单位" width="140"></el-table-column>
         <el-table-column prop="currentStock" label="当前库存" width="140"></el-table-column>
         <el-table-column prop="lowLimitStock" label="库存下限" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
@@ -71,7 +71,7 @@
             <el-input v-model="ruleForm.salePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品规格" prop="goodsSpecification">
+          <el-form-item label="商品单位" prop="goodsSpecification">
             <el-input v-model="ruleForm.goodsSpecification"></el-input>
           </el-form-item>
 
@@ -130,8 +130,12 @@
             <el-input v-model="editForm.purchasePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品规格" prop="goodsSpecification">
+          <el-form-item label="商品单位" prop="goodsSpecification">
             <el-input v-model="editForm.goodsSpecification"></el-input>
+          </el-form-item>
+
+          <el-form-item label="库存下限" prop="lowLimitStock">
+            <el-input v-model="editForm.lowLimitStock"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -220,20 +224,6 @@ export default {
     }
   },
   methods: {
-
-/*    loadGoods: function () {
-      console.log('loadGoods()');
-      let url = 'http://localhost:9091/goods';
-      console.log('url = ' + url);
-      this.axios.get(url).then((response) => {
-        let json = response.data;
-        if (json.code === 20000) {
-          this.tableData = json.data;
-        } else {
-          this.$message.error(response.data.message);
-        }
-      })
-    },*/
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -281,7 +271,7 @@ export default {
                 type: 'success'
               })
             }
-            this.loadGoods();
+            this.pageAll();
           })
         })
       }).catch(() => {
