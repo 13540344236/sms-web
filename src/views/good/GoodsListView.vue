@@ -78,16 +78,18 @@
 <!--     上传图片     -->
           <el-form-item label="商品图片" prop="url">
             <el-upload
+                class="upload-demo"
                 action="http://localhost:9091/goods/upload"
-                name="picFile"
-                list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
-                :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
           </el-form-item>
 
           <el-form-item>
@@ -157,8 +159,6 @@ export default {
   },
   data() {
     return {
-      dialogImageUrl: '',
-      dialogVisible: false,
       // 勾选的数据
       multipleSelection: [],
       tableData: [],
@@ -209,10 +209,6 @@ export default {
     }
   },
   methods: {
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
     loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/goods';
