@@ -3,72 +3,89 @@
     <h3 style="margin: 20px 0">会员管理</h3>
     <div style="display: flex;margin: 20px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary">搜索</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加会员</el-button>
+      <!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
     <div>
-<!--   会员列表   -->
+      <!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
+      <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
+      <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
+      <!--            </el-breadcrumb>-->
+      <el-dialog title="查询会员" :visible.sync="dialogFormVisibleSelect" width="50%">
+        <el-table :data="selectData" border style="width: 100%;text-align: center">
+          <el-table-column prop="id" label="会员ID" width="100"></el-table-column>
+          <el-table-column prop="name" label="会员名称" width="140"></el-table-column>
+          <el-table-column prop="phone" label="会员电话" width="80"></el-table-column>
+          <el-table-column prop="paymentMethod" label="支付方式" width="140"></el-table-column>
+          <el-table-column prop="address" label="购买商店地址" width="140"></el-table-column>
+          <el-table-column label="操作" width="150">
+            <template slot-scope="scope">
+              <el-button
+                  size="mini"
+                  type="primary"
+                  @click="edit(scope.row)">编辑
+              </el-button>
+              <el-button
+                  size="mini"
+                  type="danger"
+                  @click="openDeleteConfirm(scope.row.id)">删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
       <el-table :data="tableData" border style="width: 100%;text-align: center">
-        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="id" label="会员ID" width="100"></el-table-column>
-        <el-table-column prop="url" label="会员卡号"></el-table-column>
-        <el-table-column prop="name" label="会员姓名" width="140"></el-table-column>
-        <el-table-column prop="salePrice" label="会员生日" width="140"></el-table-column>
-        <el-table-column prop="purchasePrice" label="手机号码" width="140"></el-table-column>
-        <el-table-column prop="category" label="可用积分" width="140"></el-table-column>
-        <el-table-column prop="goodsSpecification" label="开卡金额" width="140"></el-table-column>
-        <el-table-column prop="currentStock" label="支付类型" width="140"></el-table-column>
-        <el-table-column prop="lowLimitStock" label="会员地址"></el-table-column>
+        <el-table-column prop="name" label="会员名称" width="140"></el-table-column>
+        <el-table-column prop="phone" label="会员电话" width="80"></el-table-column>
+        <el-table-column prop="paymentMethod" label="支付方式" width="140"></el-table-column>
+        <el-table-column prop="address" label="购买商店地址" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
                 size="mini"
                 type="primary"
-                @click="edit(scope.row)">编辑</el-button>
+                @click="edit(scope.row)">编辑
+            </el-button>
             <el-button
                 size="mini"
                 type="danger"
-                @click="openDeleteConfirm(scope.row.id)">删除</el-button>
+                @click="openDeleteConfirm(scope.row.id)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!--  添加会员  -->
+      <!--  添加商品  -->
       <el-dialog title="添加会员" :visible.sync="dialogFormVisible" width="50%">
 
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-          <el-form-item label="会员姓名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+          <el-form-item label="员工姓名" prop="staffName">
+            <el-input v-model="ruleForm.staffName"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员卡号" prop="url">
-            <el-input v-model="ruleForm.url"></el-input>
+          <el-form-item label="员工性别" prop="gender">
+            <el-input v-model="ruleForm.gender"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员生日" prop="category">
-            <el-input v-model="ruleForm.category"></el-input>
+          <el-form-item label="身份证号" prop="idNumber">
+            <el-input v-model="ruleForm.idNumber"></el-input>
           </el-form-item>
 
-          <el-form-item label="手机号码" prop="purchasePrice">
-            <el-input v-model="ruleForm.purchasePrice"></el-input>
+          <el-form-item label="是否在岗" prop="onDuty">
+            <el-input v-model="ruleForm.onDuty"></el-input>
           </el-form-item>
 
-          <el-form-item label="可用积分" prop="salePrice">
-            <el-input v-model="ruleForm.salePrice"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
 
-          <el-form-item label="开卡金额" prop="goodsSpecification">
-            <el-input v-model="ruleForm.goodsSpecification"></el-input>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="ruleForm.description"></el-input>
           </el-form-item>
 
-          <el-form-item label="支付类型" prop="currentStock">
-            <el-input v-model="ruleForm.currentStock"></el-input>
-          </el-form-item>
-
-          <el-form-item label="会员地址" prop="lowLimitStock">
-            <el-input v-model="ruleForm.lowLimitStock"></el-input>
-          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -77,114 +94,96 @@
         </el-form>
       </el-dialog>
 
-      <!--   编辑会员   -->
+      <!--   编辑商品   -->
       <el-dialog title="编辑会员" :visible.sync="dialogFormVisibleEdit" width="50%">
 
-        <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
-          <el-form-item label="会员姓名" prop="category">
-            <el-input v-model="editForm.category"></el-input>
+          <el-form-item label="员工ID" prop="id">
+            <el-input v-model="ruleForm.id" :disabled="true"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员卡号" prop="name">
-            <el-input v-model="editForm.name"></el-input>
+          <el-form-item label="员工名称" prop="staffName">
+            <el-input v-model="ruleForm.staffName"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员生日" prop="url">
-            <el-input v-model="editForm.url"></el-input>
+          <el-form-item label="员工性别" prop="gender">
+            <el-input v-model="ruleForm.gender"></el-input>
           </el-form-item>
 
-          <el-form-item label="手机号码" prop="salePrice">
-            <el-input v-model="editForm.salePrice"></el-input>
+          <el-form-item label="员工电话号码" prop="phone">
+            <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
 
-          <el-form-item label="可用积分" prop="purchasePrice">
-            <el-input v-model="editForm.purchasePrice"></el-input>
+          <el-form-item label="身份证号" prop="idNumber">
+            <el-input v-model="ruleForm.idNumber"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员地址" prop="goodsSpecification">
-            <el-input v-model="editForm.goodsSpecification"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
 
+          <el-form-item label="简介" prop="description">
+            <el-input v-model="ruleForm.description"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-            <el-button type="primary" @click="handleEdit(editForm.id)">确 定</el-button>
+            <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
-    </div>
-
-    <!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
   data() {
     return {
-      tableData: [{
-        id:'1',
-        url: '12255555',
-        name: '刘翠花',
-        salePrice: '1977-4-15',
-        purchasePrice:'13254847778',
-        category: '1358',
-        lowLimitStock: '新华街花园小区',
-        currentStock:'现金',
-        goodsSpecification:'2000'
-      }
-      ],
-      input:'',
-      dialogFormVisible:false,
-      dialogFormVisibleEdit:false,
+      tableData: [],
+      selectData: [],
+      input: '',
+      dialogFormVisible: false,
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleSelect: false,
       ruleForm: {
-        id:'', url: '', name: '', salePrice: '', purchasePrice:'', category: '',
-        lowLimitStock: '', currentStock:'', goodsSpecification:''
-      },
-      editForm: {
-        id:'', url: '', name: '', salePrice: '', purchasePrice:'', category: '',
-        lowLimitStock: '', currentStock:'', goodsSpecification:''
+        id: "",
+        memberId: "",
+        name: "",
+        phone: "",
+        integral: "",
+        money: "",
+        paymentMethod: "",
+        address: ""
       },
       rules: {
+        supplierPhone: [
+          {required: true, message: '电话号码', trigger: 'blur'},
+          {pattern: /^1[3456789]\d{9}$/g, message: '请输入正确的电话号码', trigger: 'blur'}
+        ],
         name: [
-          { required: true, message: '请输入商品名称', trigger: 'blur' },
-          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
-        ],
-        category: [
-          { required: true, message: '请输入商品类别', trigger: 'blur' },
-          { min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
-        ],
-        salePrice: [
-          { required: true, message: '请输入销售价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
-        ],
-        purchasePrice: [
-          { required: true, message: '请输入采购价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
+          {required: true, message: '姓名', trigger: 'blur'},
+          {min: 2, max: 20, message: '请输入正确的姓名', trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
-    loadMembers: function () {
+    loadGoods: function () {
       console.log('loadGoods()');
+      let url = 'http://localhost:9091/members';
+      console.log('url = ' + url);
+      this.axios.get(url).then((response) => {
+        let json = response.data;
+        if (json.code === 20000) {
+          this.tableData = json.data;
+        } else {
+          this.$message.error(response.data.message);
+        }
+      })
     },
     openDeleteConfirm(id) {
-      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该会员, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -194,36 +193,113 @@ export default {
       });
     },
     handleDelete(id) {
-
+      console.log('将删除id = ' + id + '的会员数据');
+      let url = 'http://localhost:9091/members/' + id + '/delete'
+      this.axios.post(url).then((response) => {
+        let json = response.data;
+        if (json.code === 20000) {
+          this.$message({
+            message: '删除会员成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error(response.data.message);
+        }
+        this.loadGoods();
+      });
     },
-
-// 添加商品
-    add(){
+//查询管理员
+    select(input) {
+      this.dialogFormVisibleSelect = true
+      this.selects(input)
+    },
+    selects(phone) {
+      console.log('将查询phone = ' + phone + '的会员数据');
+      let url = 'http://localhost:9091/members/' + phone + '/selectByPhone'
+      this.axios.get(url).then((response) => {
+        let json = response.data;
+        console.log(response)
+        if (json.code === 20000) {
+          this.selectData.push(response.data.data);
+          this.$message({
+            message: '查询会员成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error(response.data.message);
+        }
+        this.loadGoods();
+      });
+    },
+// 添加管理员
+    add() {
       this.dialogFormVisible = true
     },
     submitForm(formName) {
-
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // alert('submit!');
+          let url = 'http://localhost:9091/members/add-new';
+          console.log('url >>>' + url);
+          console.log('data >>>');
+          console.log("参数:" + this.ruleForm);
+          this.axios.post(url, this.ruleForm).then((response) => {
+            console.log(response.data);
+            if (response.data.code === 20000) {
+              this.$message({
+                message: '添加会员成功！',
+                type: 'success'
+              });
+              this.dialogFormVisible = false;
+              this.loadGoods();
+            } else {
+              this.$message.error(response.data.message);
+            }
+          }).catch(function (error) {
+            console.log('响应结果失败!')
+          })
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
 
 // 编辑商品
-    edit(val){
-      Object.assign(this.editForm,val)
+    edit(val) {
+      Object.assign(this.ruleForm, val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
-      console.log('将编辑id = ' + id + '的品牌数据');
-
+      console.log('将编辑id = ' + id + '的会员数据');
+      let url = 'http://localhost:9091/members/update'
+      this.axios.post(url, this.ruleForm).then((response) => {
+        let json = response.data;
+        console.log(response.data.data)
+        if (json.code === 20000) {
+          this.$message({
+            message: '编辑会员成功！',
+            type: 'success'
+          });
+          this.dialogFormVisibleEdit = false;
+          this.loadGoods();
+        } else {
+          this.$message.error(response.data.message);
+        }
+        this.loadGoods();
+      });
     }
-  },
-  created() {
-    console.log('vue created')
   },
   mounted() {
     console.log('vue mounted')
-    this.loadMembers();
+    this.loadGoods();
   }
 }
 </script>
+
+<style scoped>
+
+</style>
