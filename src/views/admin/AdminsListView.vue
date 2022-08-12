@@ -5,6 +5,15 @@
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加员工</el-button>
+      <el-button style="margin-left:20px" type="primary"@click="adds">导出员工信息</el-button>
+      <el-upload
+          :beforeUpload="beforeUpload"
+          :showUploadList="false"
+          :multiple="true">
+        <el-button type="primary"> 导入线索 </el-button>
+      </el-upload>
+
+
     </div>
 
 
@@ -133,6 +142,7 @@
 </template>
 
 <script>
+let href;
 export default {
   props: {
     total: {
@@ -146,6 +156,7 @@ export default {
   },
   data() {
     return {
+      fileList: [],
       tableData:[{id:'1', staffName: '张三', password: '123456', gender: '男', phone:'13255584449',
         idNumber: '514845151515851', onDuty: '1', email:'zhangsan@qq.com', description:'上班偷奸耍滑,建议开除'}],
       input:'',
@@ -184,14 +195,59 @@ export default {
     }
   },
   methods: {
-// 员工列表
     loadGoods: function () {
       console.log('loadGoods()');
+      let url = 'http://localhost:9091/admins';
+      console.log('url = ' + url);
+      this.axios.get(url).then((response) => {
+        let json = response.data;
+        if (json.code === 20000) {
+          this.tableData = json.data;
+        } else {
+          this.$message.error(response.data.message);
+        }
+      })
     },
+    beforeUpload(file){
+      let _this = this
+      console.log(file)
+      let formData = new FormData();
+      formData.append("file", file);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      };
+      let url = "http://localhost:9091/admins/upload" //这里填写调用的后端Excel数据处理接口
+      this.axios.post(url, formData, config).then(response => {
+        let  data = response.status;
+        console.log(data)
+        if (response.status == 200) {
+          this.$message('导入成功');
+          return;
+          this.loadGoods();
+        }else{
+          this.$message("导入失败");
+          return;
+        }
+
+      }).catch(function(error){
+        alert("导入失败");
+      });
+    },
+
+    adds(){
+      location.href = "http://localhost:9091/admins/download"
+    },
+
+
+
+// 员工列表
 // 添加员工
     add(){
       this.dialogFormVisible = true
     },
+
     submitForm(formName) {
 
     },
@@ -223,13 +279,13 @@ export default {
 
     },
 
-    created() {
-      console.log('vue created')
-    },
-    mounted() {
-      console.log('vue mounted')
-      this.loadGoods();
-    }
+  },
+  created() {
+    console.log('vue created')
+  },
+  mounted() {
+    console.log('vue mounted')
+    this.loadGoods();
   }
 }
 </script>
