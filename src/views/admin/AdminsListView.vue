@@ -2,9 +2,17 @@
   <div>
     <h3 style="margin: 20px 0">员工管理</h3>
     <div style="display: flex;margin: 20px 0">
-      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
-      <el-button style="margin-left:20px" type="primary" @click="add">添加员工</el-button>
+      <!--      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>-->
+      <!--      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>-->
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="员工ID">
+          <el-input v-model="formInline.id" placeholder="请输入员工ID"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <el-button style="height: 40px" type="primary" @click="add">添加员工</el-button>
       <!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
@@ -13,31 +21,7 @@
       <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
       <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
       <!--            </el-breadcrumb>-->
-      <el-dialog title="搜索员工" :visible.sync="dialogFormVisibleSelect" width="90%">
-      <el-table :data="selectData" border style="width: 100%;text-align: center">
-        <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
-        <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>
-        <el-table-column prop="gender" label="员工性别" width="80"></el-table-column>
-        <el-table-column prop="phone" label="员工电话号码" width="140"></el-table-column>
-        <el-table-column prop="idNumber" label="身份证号" width="140"></el-table-column>
-        <el-table-column prop="onDuty" label="是否在岗" width="140"></el-table-column>
-        <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
-        <el-table-column prop="description" label="描述" ></el-table-column>
-        <el-table-column prop="enable" label="是否启用" width="140"></el-table-column>
-        <el-table-column label="操作" width="150">
-          <template slot-scope="scope">
-            <el-button
-                size="mini"
-                type="primary"
-                @click="edit(scope.row)">编辑</el-button>
-            <el-button
-                size="mini"
-                type="danger"
-                @click="openDeleteConfirm(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      </el-dialog>
+
       <el-table :data="tableData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
         <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>
@@ -48,16 +32,19 @@
         <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
         <el-table-column prop="description" label="描述" width="140"></el-table-column>
         <el-table-column prop="enable" label="是否启用" width="140"></el-table-column>
+        <el-table-column prop="gmtCreate" label="员工入职时间" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
                 size="mini"
                 type="primary"
-                @click="edit(scope.row)">编辑</el-button>
+                @click="edit(scope.row)">编辑
+            </el-button>
             <el-button
                 size="mini"
                 type="danger"
-                @click="openDeleteConfirm(scope.row.id)">删除</el-button>
+                @click="openDeleteConfirm(scope.row.id)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,7 +86,6 @@
       </el-dialog>
 
 
-
       <!--   编辑商品   -->
       <el-dialog title="编辑员工" :visible.sync="dialogFormVisibleEdit" width="50%">
 
@@ -138,6 +124,21 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+
+      <!--  分页  -->
+      <div class="block" style="margin: 20px">
+        <el-pagination
+            style="text-align: center"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount">
+        </el-pagination>
+      </div>
+
     </div>
   </div>
 </template>
@@ -147,44 +148,87 @@ export default {
   data() {
     return {
       tableData: [],
-      selectData:[],
-      input:'',
-      dialogFormVisible:false,
-      dialogFormVisibleEdit:false,
-      dialogFormVisibleSelect:false,
+      input: '',
+      formInline: {
+        id: ''
+      },
+      dialogFormVisible: false,
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleSelect: false,
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
       ruleForm: {
-        id:'',
+        id: '',
         staffName: '',
         password: '',
         gender: '',
-        phone:'',
+        phone: '',
         idNumber: '',
         onDuty: '',
-        email:'',
-        description:'',
-        enable:'',
-        loginCount:'',
-        gmtLastLogin:'',
-        gmtCreate:'',
-        gmtModified:''
+        email: '',
+        description: '',
+        enable: '',
+        loginCount: '',
+        gmtLastLogin: '',
+        gmtCreate: '',
+        gmtModified: ''
 
       },
     }
   },
   methods: {
-    loadGoods: function () {
-      console.log('loadGoods()');
-      let url = 'http://localhost:9091/admins';
-      console.log('url = ' + url);
-      this.axios.get(url).then((response) => {
-        let json = response.data;
-        if (json.code === 20000) {
-          this.tableData = json.data;
-        } else {
-          this.$message.error(response.data.message);
-        }
-      })
+    // handleDate(){
+    //   if(this.tableData.length){
+    //     this.tableData.map((item)=>{
+    //       Object.keys(item.attributes).forEach((itemObj)=>{
+    //         item[itemObj]=item.attributes[itemObj]
+    //       })
+    //     })
+    //   }
+    // },
+    onSubmit() {
+      this.axios.get('http://localhost:9091/admins/' + this.formInline.id + '/selectById')
+          .then((response) => {
+            console.log("canshu", response)
+            this.tableData = [response.data.data]
+            console.log(this.tableData)
+          })
     },
+    // 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/admins/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
+    },
+    // loadGoods: function () {
+    //   console.log('loadGoods()');
+    //   let url = 'http://localhost:9091/admins';
+    //   console.log('url = ' + url);
+    //   this.axios.get(url).then((response) => {
+    //     let json = response.data;
+    //     if (json.code === 20000) {
+    //       this.tableData = json.data;
+    //     } else {
+    //       this.$message.error(response.data.message);
+    //     }
+    //   })
+    // },
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -208,15 +252,15 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
 //查询管理员
-    select(input){
+    select(input) {
       this.dialogFormVisibleSelect = true
       this.selects(input)
     },
-    selects(id){
+    selects(id) {
       console.log('将查询id = ' + id + '的员工数据');
       let url = 'http://localhost:9091/admins/' + id + '/selectById'
       this.axios.get(url).then((response) => {
@@ -235,7 +279,7 @@ export default {
       });
     },
 // 添加管理员
-    add(){
+    add() {
       this.dialogFormVisible = true
     },
     submitForm(formName) {
@@ -243,19 +287,19 @@ export default {
         if (valid) {
           // alert('submit!');
           let url = 'http://localhost:9091/admins/add-new';
-          console.log('url >>>'+url);
+          console.log('url >>>' + url);
           console.log('data >>>');
           console.log("参数:" + this.ruleForm);
-          this.axios.post(url,this.ruleForm).then((response) => {
+          this.axios.post(url, this.ruleForm).then((response) => {
             console.log(response.data);
-            if (response.data.code === 20000){
+            if (response.data.code === 20000) {
               this.$message({
                 message: '添加员工成功！',
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadGoods();
-            }else {
+              this.pageAll();
+            } else {
               this.$message.error(response.data.message);
             }
           }).catch(function (error) {
@@ -272,14 +316,14 @@ export default {
     },
 
 // 编辑商品
-    edit(val){
-      Object.assign(this.ruleForm,val)
+    edit(val) {
+      Object.assign(this.ruleForm, val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的员工数据');
       let url = 'http://localhost:9091/admins/update'
-      this.axios.post(url,this.ruleForm).then((response) => {
+      this.axios.post(url, this.ruleForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -288,17 +332,19 @@ export default {
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadGoods();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     }
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
+    this.pageAll();
+  },
+  created() {
+    this.pageAll();
   }
 }
 </script>
