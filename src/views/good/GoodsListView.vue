@@ -3,7 +3,7 @@
     <h3 style="margin: 20px 0">商品管理</h3>
     <div style="display: flex;margin: 20px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary">搜索</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="select(id)">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
       <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
       <!--  批量删除  -->
@@ -12,20 +12,27 @@
     </div>
 
     <div>
-<!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
-<!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
-<!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
-<!--            </el-breadcrumb>-->
+      <!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
+      <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
+      <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
+      <!--            </el-breadcrumb>-->
 
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="商品ID" width="100"></el-table-column>
-        <el-table-column prop="url" label="商品图片"></el-table-column>
+             <el-table-column  label="商品图片"width="80">
+          <template slot-scope="scope">
+            <el-image
+                style="width: 60px; height: 60px"
+                :src="scope.row.url"
+                :fit="fit" />
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
         <el-table-column prop="salePrice" label="销售价格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice" label="采购价格" width="140"></el-table-column>
         <el-table-column prop="category" label="商品类别" width="140"></el-table-column>
+        <el-table-column prop="categoryId" label="商品类别Id" width="140"></el-table-column>
         <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
         <el-table-column prop="currentStock" label="当前库存" width="140"></el-table-column>
         <el-table-column prop="lowLimitStock" label="库存下限" width="140"></el-table-column>
@@ -34,11 +41,13 @@
             <el-button
                 size="mini"
                 type="primary"
-                @click="edit(scope.row)">编辑</el-button>
+                @click="edit(scope.row)">编辑
+            </el-button>
             <el-button
                 size="mini"
                 type="danger"
-                @click="openDeleteConfirm(scope.row.id)">删除</el-button>
+                @click="openDeleteConfirm(scope.row.id)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,36 +145,39 @@
 
 
 
-<!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
+    <!--  分页  -->
+    <div class="block" style="margin: 20px">
+      <el-pagination
+          style="text-align: center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+      </el-pagination>
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
   data() {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
       // 勾选的数据
       multipleSelection: [],
-      tableData: [],
-      fileList: [],
-      input:'',
-      dialogFormVisible:false,
-      dialogFormVisibleEdit:false,
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
+
+      tableData: [],//图片返回url需要使用
+      filelist:[],//图片数组
+      input: '',
+      dialogFormVisible: false,
+      dialogFormVisibleEdit: false,
       ruleForm: {
         id:'',
         url: '',
@@ -209,11 +221,8 @@ export default {
     }
   },
   methods: {
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
-    loadGoods: function () {
+
+/*    loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/goods';
       console.log('url = ' + url);
@@ -225,7 +234,7 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
+    },*/
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -249,7 +258,7 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
 
@@ -264,10 +273,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.multipleSelection.forEach((res,i) => {
+        this.multipleSelection.forEach((res, i) => {
           let url = 'http://localhost:9091/goods/' + res.id + '/delete'
           this.axios.post(url).then((response) => {
-            if (response.data.code === 20000 && (i+1) ===this.multipleSelection.length) {
+            if (response.data.code === 20000 && (i + 1) === this.multipleSelection.length) {
               this.$message({
                 message: '删除品牌成功！',
                 type: 'success'
@@ -288,21 +297,21 @@ export default {
         if (valid) {
           // alert('submit!');
           let url = 'http://localhost:9091/goods/add-new';
-          console.log('url >>>'+url);
+          console.log('url >>>' + url);
           console.log('data >>>');
           console.log("参数:" + this.ruleForm);
-          this.axios.post(url,this.ruleForm).then((response) => {
+          this.axios.post(url, this.ruleForm).then((response) => {
             console.log(response.data);
-            if (response.data.code === 20000){
+            if (response.data.code === 20000) {
               this.$message({
                 message: '添加商品成功！',
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadGoods();
-            }else {
+            } else {
               this.$message.error(response.data.message);
             }
+            this.pageAll()
           }).catch(function (error) {
             console.log('响应结果失败!')
           })
@@ -317,14 +326,14 @@ export default {
     },
 
 // 编辑商品
-    edit(val){
-      Object.assign(this.editForm,val)
+    edit(val) {
+      Object.assign(this.editForm, val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的品牌数据');
       let url = 'http://localhost:9091/goods/' + id + '/edit'
-      this.axios.post(url,this.editForm).then((response) => {
+      this.axios.post(url, this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -333,39 +342,77 @@ export default {
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadGoods();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
     exportExcel(){
       location.href = "http://localhost:9091/goods/exportExcel"
     },
 
+    // 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/goods/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
+    },
+
+    select(id){
+
+    },
+
+
+
+
 // 上传图片
     handleRemove(file, fileList) {
       console.log(file, fileList);
+      //发请求告诉服务器删除文件夹里面的文件
+      //得到要删除的文件名
+      let fileName= file.response;
+      console.log("文件名:"+fileName);
+      axios.get("/remove?fileName="+fileName).then(function (response) {
+        console.log("服务器文件删除完成!");
+      })
     },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
-    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    }
   },
 
 
   created() {
     console.log('vue created')
+    this.axios.get('http://localhost:9091/goods').then((response) => {
+      if (response.data.code === 20000) {
+        this.tableData = response.data.data;
+      } else {
+        this.$message.error(response.data.message);
+      }
+    })
+    this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
     this.loadGoods();
+    this.pageAll();
   }
 }
 </script>
