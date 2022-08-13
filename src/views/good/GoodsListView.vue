@@ -2,13 +2,19 @@
   <div>
     <h3 style="margin: 20px 0">商品管理</h3>
     <div style="display: flex;margin: 20px 0">
-      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary" @click="select(id)">搜索</el-button>
-      <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
-      <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
-      <!--  批量删除  -->
-      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="商品名">
+          <el-input v-model="formInline.name" placeholder="请输入商品名"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
 
+        <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+        <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+        <!--  批量删除  -->
+        <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+      </el-form>
     </div>
 
     <div>
@@ -20,7 +26,7 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-             <el-table-column  label="商品图片"width="80">
+        <el-table-column  label="商品图片"width="80">
           <template slot-scope="scope">
             <el-image
                 style="width: 60px; height: 60px"
@@ -32,7 +38,8 @@
         <el-table-column prop="salePrice" label="销售价格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice" label="采购价格" width="140"></el-table-column>
         <el-table-column prop="category" label="商品类别" width="140"></el-table-column>
-        <el-table-column prop="goodsSpecification" label="商品单位" width="140"></el-table-column>
+        <el-table-column prop="categoryId" label="商品类别Id" width="140"></el-table-column>
+        <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
         <el-table-column prop="currentStock" label="当前库存" width="140"></el-table-column>
         <el-table-column prop="lowLimitStock" label="库存下限" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
@@ -71,7 +78,7 @@
             <el-input v-model="ruleForm.salePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品单位" prop="goodsSpecification">
+          <el-form-item label="商品规格" prop="goodsSpecification">
             <el-input v-model="ruleForm.goodsSpecification"></el-input>
           </el-form-item>
 
@@ -83,7 +90,7 @@
             <el-input v-model="ruleForm.lowLimitStock"></el-input>
           </el-form-item>
 
-<!--     上传图片     -->
+          <!--     上传图片     -->
           <el-form-item label="商品图片" prop="url">
             <el-upload
                 action="http://localhost:9091/goods/upload"
@@ -105,7 +112,7 @@
         </el-form>
       </el-dialog>
 
-<!--   编辑商品   -->
+      <!--   编辑商品   -->
       <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
 
         <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -130,12 +137,8 @@
             <el-input v-model="editForm.purchasePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品单位" prop="goodsSpecification">
+          <el-form-item label="商品规格" prop="goodsSpecification">
             <el-input v-model="editForm.goodsSpecification"></el-input>
-          </el-form-item>
-
-          <el-form-item label="库存下限" prop="lowLimitStock">
-            <el-input v-model="editForm.lowLimitStock"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -178,6 +181,9 @@ export default {
 
       tableData: [],//图片返回url需要使用
       filelist:[],//图片数组
+      formInline:{
+        name: '',
+      },
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
@@ -224,6 +230,29 @@ export default {
     }
   },
   methods: {
+
+    /*    loadGoods: function () {
+          console.log('loadGoods()');
+          let url = 'http://localhost:9091/goods';
+          console.log('url = ' + url);
+          this.axios.get(url).then((response) => {
+            let json = response.data;
+            if (json.code === 20000) {
+              this.tableData = json.data;
+            } else {
+              this.$message.error(response.data.message);
+            }
+          })
+        },*/
+    //查询商品
+    onSubmit() {
+      this.axios.post('http://localhost:9091/goods/selectByName',this.formInline)
+          .then((response) => {
+            console.log("canshu", response)
+            this.tableData = response.data.data
+            console.log(this.tableData)
+          })
+    },
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -271,7 +300,6 @@ export default {
                 type: 'success'
               })
             }
-            this.pageAll();
           })
         })
       }).catch(() => {
@@ -400,7 +428,6 @@ export default {
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
     this.pageAll();
   }
 }
