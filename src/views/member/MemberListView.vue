@@ -2,18 +2,9 @@
   <div>
     <h3 style="margin: 20px 0">会员管理</h3>
     <div style="display: flex;margin: 20px 0">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="会员号">
-          <el-input v-model="formInline.phone" placeholder="请输入会员号"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询会员</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button style="margin-left:5px" type="primary" @click="add">添加会员</el-button>
-      </el-form-item>
-      </el-form>
-
+      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
+      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
+      <el-button style="margin-left:20px" type="primary" @click="add">添加会员</el-button>
       <!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
@@ -22,14 +13,35 @@
       <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
       <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
       <!--            </el-breadcrumb>-->
+      <el-dialog title="查询会员" :visible.sync="dialogFormVisibleSelect" width="50%">
+        <el-table :data="selectData" border style="width: 100%;text-align: center">
+          <el-table-column prop="id" label="会员ID" width="100"></el-table-column>
+          <el-table-column prop="name" label="会员名称" width="140"></el-table-column>
+          <el-table-column prop="phone" label="会员电话" width="80"></el-table-column>
+          <el-table-column prop="paymentMethod" label="支付方式" width="140"></el-table-column>
+          <el-table-column prop="address" label="购买商店地址" width="140"></el-table-column>
+          <el-table-column label="操作" width="150">
+            <template slot-scope="scope">
+              <el-button
+                  size="mini"
+                  type="primary"
+                  @click="edit(scope.row)">编辑
+              </el-button>
+              <el-button
+                  size="mini"
+                  type="danger"
+                  @click="openDeleteConfirm(scope.row.id)">删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
       <el-table :data="tableData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="会员ID" width="100"></el-table-column>
-        <el-table-column prop="memberId" label="会员卡号" width="100"></el-table-column>
         <el-table-column prop="name" label="会员名称" width="140"></el-table-column>
-        <el-table-column prop="phone" label="会员电话"></el-table-column>
-        <el-table-column prop="integral" label="会员积分"></el-table-column>
-        <el-table-column prop="money" label="会员余额"></el-table-column>
-        <el-table-column prop="paymentMethod" label="支付方式" ></el-table-column>
+        <el-table-column prop="phone" label="会员电话" width="80"></el-table-column>
+        <el-table-column prop="paymentMethod" label="支付方式" width="140"></el-table-column>
+        <el-table-column prop="address" label="购买商店地址" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
@@ -50,26 +62,30 @@
       <el-dialog title="添加会员" :visible.sync="dialogFormVisible" width="50%">
 
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-
-          <el-form-item label="会员姓名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+          <el-form-item label="员工姓名" prop="staffName">
+            <el-input v-model="ruleForm.staffName"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员电话" prop="phone">
-            <el-input v-model="ruleForm.phone"></el-input>
+          <el-form-item label="员工性别" prop="gender">
+            <el-input v-model="ruleForm.gender"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员积分" prop="integral">
-            <el-input v-model="ruleForm.integral"></el-input>
+          <el-form-item label="身份证号" prop="idNumber">
+            <el-input v-model="ruleForm.idNumber"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员余额" prop="money">
-            <el-input v-model="ruleForm.money"></el-input>
+          <el-form-item label="是否在岗" prop="onDuty">
+            <el-input v-model="ruleForm.onDuty"></el-input>
           </el-form-item>
 
-          <el-form-item label="支付方式" prop="paymentMethod">
-            <el-input v-model="ruleForm.paymentMethod"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
+
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="ruleForm.description"></el-input>
+          </el-form-item>
+
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -83,26 +99,33 @@
 
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
-          <el-form-item label="会员ID" prop="id">
+          <el-form-item label="员工ID" prop="id">
             <el-input v-model="ruleForm.id" :disabled="true"></el-input>
           </el-form-item>
 
-          <el-form-item label="会员名称" prop="gender">
-            <el-input v-model="ruleForm.name"></el-input>
+          <el-form-item label="员工名称" prop="staffName">
+            <el-input v-model="ruleForm.staffName"></el-input>
+          </el-form-item>
+
+          <el-form-item label="员工性别" prop="gender">
+            <el-input v-model="ruleForm.gender"></el-input>
           </el-form-item>
 
           <el-form-item label="员工电话号码" prop="phone">
             <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
 
-          <el-form-item label="支付方式" prop="idNumber">
-            <el-input v-model="ruleForm.paymentMethod"></el-input>
+          <el-form-item label="身份证号" prop="idNumber">
+            <el-input v-model="ruleForm.idNumber"></el-input>
           </el-form-item>
 
-          <el-form-item label="购买商店地址" prop="email">
-            <el-input v-model="ruleForm.address"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
 
+          <el-form-item label="简介" prop="description">
+            <el-input v-model="ruleForm.description"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
             <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
@@ -118,9 +141,7 @@ export default {
   data() {
     return {
       tableData: [],
-      formInline: {
-        phone: ''
-      },
+      selectData: [],
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
@@ -160,14 +181,6 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
-    onSubmit() {
-      this.axios.get('http://localhost:9091/members/' + this.formInline.phone + '/selectByPhone')
-          .then((response) => {
-            console.log("canshu", response)
-            this.tableData = [response.data.data]
-            console.log(this.tableData)
-          })
     },
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该会员, 是否继续?', '提示', {
