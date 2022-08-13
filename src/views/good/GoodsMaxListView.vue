@@ -124,28 +124,31 @@
 
 
     <!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
+    <div class="block" style="margin: 20px">
+      <el-pagination
+          style="text-align: center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+      </el-pagination>
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
   data() {
     return {
       // 勾选的数据
       multipleSelection: [],
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
+
       tableData: [],
       fileList: [],
       input:'',
@@ -194,7 +197,7 @@ export default {
     }
   },
   methods: {
-    loadGoods: function () {
+/*    loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/goodsmax';
       console.log('url = ' + url);
@@ -206,7 +209,7 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
+    },*/
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -230,7 +233,7 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
 
@@ -254,7 +257,7 @@ export default {
                 type: 'success'
               })
             }
-            this.loadGoods();
+            this.pageAll();
           })
         })
       }).catch(() => {
@@ -280,7 +283,7 @@ export default {
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadGoods();
+              this.pageAll();
             }else {
               this.$message.error(response.data.message);
             }
@@ -314,15 +317,35 @@ export default {
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadGoods();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
     exportExcel(){
       location.href = "http://localhost:9091/goodsmax/exportExcel"
+    },
+
+    // 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/goodsmax/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
     },
 
 // 上传图片
@@ -343,10 +366,11 @@ export default {
 
   created() {
     console.log('vue created')
+    this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
+    this.pageAll();
   }
 }
 </script>

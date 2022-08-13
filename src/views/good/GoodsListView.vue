@@ -24,8 +24,7 @@
           <template slot-scope="scope">
             <el-image
                 style="width: 60px; height: 60px"
-                :src="scope.row.url"
-                :fit="fit" />
+                :src="scope.row.url"/>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
@@ -221,7 +220,6 @@ export default {
     }
   },
   methods: {
-
 /*    loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/goods';
@@ -377,9 +375,6 @@ export default {
 
     },
 
-
-
-
 // 上传图片
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -400,18 +395,10 @@ export default {
 
   created() {
     console.log('vue created')
-    this.axios.get('http://localhost:9091/goods').then((response) => {
-      if (response.data.code === 20000) {
-        this.tableData = response.data.data;
-      } else {
-        this.$message.error(response.data.message);
-      }
-    })
     this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
     this.pageAll();
   }
 }
