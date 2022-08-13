@@ -3,8 +3,8 @@
     <h3 style="margin: 20px 0">会员管理</h3>
     <div style="display: flex;margin: 20px 0">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="会员电话">
-          <el-input v-model="formInline.phone" placeholder="请输入会员电话"></el-input>
+        <el-form-item label="会员号">
+          <el-input v-model="formInline.phone" placeholder="请输入会员号"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询会员</el-button>
@@ -24,8 +24,11 @@
       <!--            </el-breadcrumb>-->
       <el-table :data="tableData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="会员ID" width="100"></el-table-column>
+        <el-table-column prop="memberId" label="会员卡号" width="100"></el-table-column>
         <el-table-column prop="name" label="会员名称" width="140"></el-table-column>
         <el-table-column prop="phone" label="会员电话"></el-table-column>
+        <el-table-column prop="integral" label="会员积分"></el-table-column>
+        <el-table-column prop="money" label="会员余额"></el-table-column>
         <el-table-column prop="paymentMethod" label="支付方式" ></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
@@ -47,13 +50,6 @@
       <el-dialog title="添加会员" :visible.sync="dialogFormVisible" width="50%">
 
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-          <el-form-item label="会员ID" prop="id">
-            <el-input v-model="ruleForm.id"></el-input>
-          </el-form-item>
-
-          <el-form-item label="会员卡号" prop="memberId">
-            <el-input v-model="ruleForm.memberId"></el-input>
-          </el-form-item>
 
           <el-form-item label="会员姓名" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
