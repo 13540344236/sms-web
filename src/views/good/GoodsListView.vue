@@ -38,7 +38,6 @@
         <el-table-column prop="salePrice" label="销售价格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice" label="采购价格" width="140"></el-table-column>
         <el-table-column prop="category" label="商品类别" width="140"></el-table-column>
-        <el-table-column prop="categoryId" label="商品类别Id" width="140"></el-table-column>
         <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
         <el-table-column prop="currentStock" label="当前库存" width="140"></el-table-column>
         <el-table-column prop="lowLimitStock" label="库存下限" width="140"></el-table-column>
@@ -125,9 +124,6 @@
             <el-input v-model="editForm.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品图片的url" prop="url">
-            <el-input v-model="editForm.url"></el-input>
-          </el-form-item>
 
           <el-form-item label="销售价格" prop="salePrice">
             <el-input v-model="editForm.salePrice"></el-input>

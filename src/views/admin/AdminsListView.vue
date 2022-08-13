@@ -234,6 +234,7 @@ export default {
         this.selects();
       });
     },
+
 // 添加管理员
     add(){
       this.dialogFormVisible = true
