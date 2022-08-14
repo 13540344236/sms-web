@@ -7,7 +7,7 @@
       <el-button style="margin-left:20px" type="primary" @click="add">添加销售</el-button>
       <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出销售详情</el-button>
       <!--  批量删除  -->
-      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+      <el-button style="margin-left:20px" type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
     </div>
 
     <div>
@@ -19,14 +19,14 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="商品ID" width="100"></el-table-column>
+        <el-table-column prop="id" label="商品ID" width="80"></el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
         <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
         <el-table-column prop="saleQuantity" label="销售数量" width="140"></el-table-column>
         <el-table-column prop="customerName" label="客户姓名" width="140"></el-table-column>
-        <el-table-column prop="customerPhone" label="客服电话" width="140"></el-table-column>
+        <el-table-column prop="customerPhone" label="客服电话"></el-table-column>
         <el-table-column prop="operatingStaff" label="操作员工" width="140"></el-table-column>
-        <el-table-column prop="gmtCreate" label="操作时间"  width="140"></el-table-column>
+        <el-table-column prop="gmtCreate" label="操作时间"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
@@ -69,9 +69,6 @@
             <el-input v-model="ruleForm.operatingStaff"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品logo的URL" prop="logo">
-            <el-input v-model="ruleForm.logo"></el-input>
-          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -108,14 +105,6 @@
             <el-input v-model="editForm.operatingStaff"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品logo的URL" prop="logo">
-            <el-input v-model="editForm.logo"></el-input>
-          </el-form-item>
-
-          <el-form-item label="操作时间" prop="gmtCreate">
-            <el-input v-model="editForm.gmtCreate"></el-input>
-          </el-form-item>
-
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
             <el-button type="primary" @click="handleEdit(editForm.id)">确 定</el-button>
@@ -124,31 +113,33 @@
       </el-dialog>
     </div>
 
-
-
     <!--  分页  -->
-    <div style="text-align: center;margin: 20px">
-      <el-pagination background layout="total,prev, pager, next, jumper"
-                     :total="total" :page-size="pageSize"></el-pagination>
+    <div class="block" style="margin: 20px">
+      <el-pagination
+          style="text-align: center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+      </el-pagination>
     </div>
+
   </div>
 </template>
 <script>
 export default {
-  props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    }
-  },
   data() {
     return {
       // 勾选的数据
       multipleSelection: [],
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
+
       tableData: [],
       input:'',
       dialogFormVisible:false,
@@ -184,7 +175,7 @@ export default {
     }
   },
   methods: {
-    loadSales: function () {
+/*    loadSales: function () {
       console.log('loadSales()');
       let url = 'http://localhost:9091/sales';
       console.log('url = ' + url);
@@ -196,9 +187,11 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
+    },*/
+
+// 删除销售数据
     openDeleteConfirm(id) {
-      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -208,7 +201,7 @@ export default {
       });
     },
     handleDelete(id) {
-      console.log('将删除id = ' + id + '的品牌数据');
+      console.log('将删除id = ' + id + '的销售数据');
       let url = 'http://localhost:9091/sales/' + id + '/delete'
       this.axios.post(url).then((response) => {
         let json = response.data;
@@ -220,7 +213,7 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadSales();
+        this.pageAll();
       });
     },
 
@@ -230,7 +223,7 @@ export default {
       this.multipleSelection = val
     },
     batchDelete() {
-      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -240,17 +233,18 @@ export default {
           this.axios.post(url).then((response) => {
             if (response.data.code === 20000 && (i+1) ===this.multipleSelection.length) {
               this.$message({
-                message: '删除订单成功！',
+                message: '删除销售数据成功！',
                 type: 'success'
               })
             }
-            this.loadSales();
+            this.pageAll();
           })
         })
       }).catch(() => {
       });
     },
-// 添加商品
+
+// 添加销售数据
     add(){
       this.dialogFormVisible = true
     },
@@ -266,11 +260,11 @@ export default {
             console.log(response.data);
             if (response.data.code === 20000){
               this.$message({
-                message: '添加订单成功！',
+                message: '添加销售数据成功！',
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadSales();
+              this.pageAll();
             }else {
               this.$message.error(response.data.message);
             }
@@ -287,40 +281,65 @@ export default {
       this.$refs[formName].resetFields();
     },
 
-// 编辑商品
+// 编辑销售数据
     edit(val){
       Object.assign(this.editForm,val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
-      console.log('将编辑id = ' + id + '的品牌数据');
+      console.log('将编辑id = ' + id + '的销售数据');
       let url = 'http://localhost:9091/sales/' + id + '/edit'
       this.axios.post(url,this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
           this.$message({
-            message: '编辑订单成功！',
+            message: '编辑销售数据成功！',
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadSales();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadSales();
+        this.pageAll();
       });
     },
+
+// 导出报表
     exportExcel(){
       location.href = "http://localhost:9091/sales/exportExcel"
-    }
+    },
+
+// 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/sales/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
+    },
   },
+
+
   created() {
     console.log('vue created')
+    this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
-    this.loadSales();
+    this.pageAll();
   }
 }
 </script>
