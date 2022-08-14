@@ -1,10 +1,23 @@
 <template>
   <div>
     <h3 style="margin: 20px 0">员工管理</h3>
-    <div style="display: flex;margin: 20px 0">
+    <div style="display: flex;margin: 40px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加员工</el-button>
+      <el-button style="margin-left:20px" type="primary"@click="adds">导出员工信息</el-button>
+<!--      <el-button type="primary"
+                 style="margin-left:20px"
+                 @click="beforeUpload"
+                 :showUploadList="false"
+                 :multiple="true"> 批量导入员工信息 </el-button>-->
+      <el-upload
+          style="margin-left:20px"
+          :beforeUpload="beforeUpload"
+          :showUploadList="false"
+          :multiple="true">
+        <el-button type="primary"> 批量导入员工信息 </el-button>
+      </el-upload>
     </div>
 
     <div>
@@ -338,7 +351,39 @@ export default {
       console.log(`当前页: ${pageNum}`);
       this.pageNum = pageNum;
       this.pageAll()
-    }
+    },
+
+    //表格导入数据库
+    beforeUpload(file){
+      let _this = this
+      console.log(file)
+      let formData = new FormData();
+      formData.append("file", file);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      };
+      let url = "http://localhost:9091/admins/importExcel" //这里填写调用的后端Excel数据处理接口
+      this.axios.post(url, formData, config).then(response => {
+        let  data = response.status;
+        console.log(data)
+        if (response.status == 200) {
+          this.$message('导入成功');
+          return;
+          this.loadGoods();
+        }else{
+          this.$message("导入失败");
+          return;
+        }
+      }).catch(function(error){
+        alert("导入失败");
+      });
+    },
+    //导出表格
+    adds(){
+      location.href = "http://localhost:9091/admins/exportExcel"
+    },
   },
 
   created() {
