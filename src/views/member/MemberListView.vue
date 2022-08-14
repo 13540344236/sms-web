@@ -2,14 +2,23 @@
   <div>
     <h3 style="margin: 20px 0">会员管理</h3>
     <div style="display: flex;margin: 20px 0">
-      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
-      <el-button style="margin-left:20px" type="primary" @click="add">添加会员</el-button>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="会员电话">
+          <el-input v-model="formInline.phone" placeholder="请输入会员电话"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询会员</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="margin-left:5px" type="primary" @click="add">添加会员</el-button>
+        </el-form-item>
+        <el-button
+            style="margin-left:20px"
+            type="danger" @click="batchDelete"
+            :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+      </el-form>
       <!--  批量删除  -->
-      <el-button
-          style="margin-left:20px"
-          type="danger" @click="batchDelete"
-          :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+
     </div>
 
     <div>
@@ -176,7 +185,9 @@ export default {
       totalCount: 0,
 
       tableData: [],
-      selectData: [],
+      formInline: {
+        phone: ''
+      },
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
@@ -274,27 +285,13 @@ export default {
     },
 
 //查询会员
-    select(input) {
-      this.dialogFormVisibleSelect = true
-      this.selects(input)
-    },
-    selects(phone) {
-      console.log('将查询phone = ' + phone + '的会员数据');
-      let url = 'http://localhost:9091/members/' + phone + '/selectByPhone'
-      this.axios.get(url).then((response) => {
-        let json = response.data;
-        console.log(response)
-        if (json.code === 20000) {
-          this.selectData.push(response.data.data);
-          this.$message({
-            message: '查询会员成功！',
-            type: 'success'
+    onSubmit() {
+      this.axios.get('http://localhost:9091/members/' + this.formInline.phone + '/selectByPhone')
+          .then((response) => {
+            console.log("canshu", response)
+            this.tableData = [response.data.data]
+            console.log(this.tableData)
           })
-        } else {
-          this.$message.error(response.data.message);
-        }
-        this.pageAll();
-      });
     },
 
 // 添加管理员

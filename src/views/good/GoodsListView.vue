@@ -8,6 +8,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
           <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
           <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
           <!--  批量删除  -->
@@ -15,7 +16,6 @@
               style="margin-left:20px"
               type="danger" @click="batchDelete"
               :disabled="this.multipleSelection.length === 0">批量删除</el-button>
-        </el-form-item>
       </el-form>
     </div>
 

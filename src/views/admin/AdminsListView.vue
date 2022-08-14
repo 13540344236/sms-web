@@ -2,10 +2,17 @@
   <div>
     <h3 style="margin: 20px 0">员工管理</h3>
     <div style="display: flex;margin: 40px 0">
-      <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
-      <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
-      <el-button style="margin-left:20px" type="primary" @click="add">添加员工</el-button>
-      <el-button style="margin-left:20px" type="primary"@click="adds">导出员工信息</el-button>
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="员工ID">
+          <el-input v-model="formInline.id" placeholder="请输入员工ID"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+        <el-button style="height: 40px" type="primary" @click="add">添加员工</el-button>
+        <el-button style="margin-left:20px" type="primary"@click="adds">导出员工信息</el-button>
+      </el-form>
+
 <!--      <el-button type="primary"
                  style="margin-left:20px"
                  @click="beforeUpload"
@@ -38,6 +45,7 @@
         <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
         <el-table-column prop="description" label="描述" ></el-table-column>
         <el-table-column prop="enable" label="是否启用" width="140"></el-table-column>
+        <el-table-column prop="gmtCreate" label="员工入职时间" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
@@ -178,9 +186,10 @@ export default {
       pageNum: 1,
       pageSize: 10,
       totalCount: 0,
-
+      formInline: {
+        id: ''
+      },
       tableData: [],
-      selectData:[],
       input:'',
       dialogFormVisible:false,
       dialogFormVisibleEdit:false,
@@ -218,7 +227,15 @@ export default {
         }
       })
     },*/
-
+    //查询
+    onSubmit() {
+      this.axios.get('http://localhost:9091/admins/' + this.formInline.id + '/selectById')
+          .then((response) => {
+            console.log("canshu", response)
+            this.tableData = [response.data.data]
+            console.log(this.tableData)
+          })
+    },
 // 删除员工
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
