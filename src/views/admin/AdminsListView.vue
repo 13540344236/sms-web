@@ -5,7 +5,6 @@
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary" @click="select(input)">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加员工</el-button>
-      <!--      <el-button style="margin-left:20px" type="primary" @click="addNew">添加商品</el-button>-->
     </div>
 
     <div>
@@ -13,7 +12,9 @@
       <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
       <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
       <!--            </el-breadcrumb>-->
-      <el-dialog title="编辑员工" :visible.sync="dialogFormVisibleSelect" width="90%">
+
+      <!--  查询员工  -->
+      <el-dialog title="查询员工" :visible.sync="dialogFormVisibleSelect" width="90%">
       <el-table :data="selectData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
         <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>
@@ -38,12 +39,13 @@
         </el-table-column>
       </el-table>
       </el-dialog>
+
       <el-table :data="tableData" border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
         <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>
         <el-table-column prop="gender" label="员工性别" width="80"></el-table-column>
         <el-table-column prop="phone" label="员工电话号码" width="140"></el-table-column>
-        <el-table-column prop="idNumber" label="身份证号" width="140"></el-table-column>
+        <el-table-column prop="idNumber" label="身份证号"></el-table-column>
         <el-table-column prop="onDuty" label="是否在岗" width="140"></el-table-column>
         <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
         <el-table-column prop="description" label="描述" width="140"></el-table-column>
@@ -62,7 +64,7 @@
         </el-table-column>
       </el-table>
 
-      <!--  添加商品  -->
+      <!--  添加员工  -->
       <el-dialog title="添加员工" :visible.sync="dialogFormVisible" width="50%">
 
         <el-form :model="ruleForm" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -98,9 +100,7 @@
         </el-form>
       </el-dialog>
 
-
-
-      <!--   编辑商品   -->
+      <!--   编辑员工   -->
       <el-dialog title="编辑员工" :visible.sync="dialogFormVisibleEdit" width="50%">
 
         <el-form :model="ruleForm" ref="ruleForm" label-width="150px" class="demo-ruleForm">
@@ -139,6 +139,21 @@
         </el-form>
       </el-dialog>
     </div>
+
+    <!--  分页  -->
+    <div class="block" style="margin: 20px">
+      <el-pagination
+          style="text-align: center"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+      </el-pagination>
+    </div>
+
   </div>
 </template>
 
@@ -146,6 +161,11 @@
 export default {
   data() {
     return {
+      // 分页
+      pageNum: 1,
+      pageSize: 10,
+      totalCount: 0,
+
       tableData: [],
       selectData:[],
       input:'',
@@ -172,7 +192,7 @@ export default {
     }
   },
   methods: {
-    loadGoods: function () {
+/*    loadGoods: function () {
       console.log('loadGoods()');
       let url = 'http://localhost:9091/admins';
       console.log('url = ' + url);
@@ -184,7 +204,9 @@ export default {
           this.$message.error(response.data.message);
         }
       })
-    },
+    },*/
+
+// 删除员工
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -208,10 +230,11 @@ export default {
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
     },
-//查询管理员
+
+// 查询员工
     select(input){
       this.dialogFormVisibleSelect = true
       this.selects(input)
@@ -255,7 +278,7 @@ export default {
                 type: 'success'
               });
               this.dialogFormVisible = false;
-              this.loadGoods();
+              this.pageAll();
             }else {
               this.$message.error(response.data.message);
             }
@@ -289,17 +312,42 @@ export default {
             type: 'success'
           });
           this.dialogFormVisibleEdit = false;
-          this.loadGoods();
         } else {
           this.$message.error(response.data.message);
         }
-        this.loadGoods();
+        this.pageAll();
       });
+    },
+
+// 分页查询
+    pageAll() {
+      console.log('pageAll()')
+      this.axios.get('http://localhost:9091/admins/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+          .then((response) => {
+            console.log(response)
+            this.tableData = response.data.data.list
+            this.totalCount = response.data.data.totalCount
+          })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize;
+      this.pageAll()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum;
+      this.pageAll()
     }
+  },
+
+  created() {
+    console.log('vue created')
+    this.pageAll();
   },
   mounted() {
     console.log('vue mounted')
-    this.loadGoods();
+    this.pageAll();
   }
 }
 </script>

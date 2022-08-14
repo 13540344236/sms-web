@@ -1,19 +1,21 @@
 <template>
   <div>
     <h3 style="margin: 20px 0">商品管理</h3>
-    <div style="display: flex;margin: 20px 0">
+    <div style="display: flex">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="商品名">
           <el-input v-model="formInline.name" placeholder="请输入商品名"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+          <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+          <!--  批量删除  -->
+          <el-button
+              style="margin-left:20px"
+              type="danger" @click="batchDelete"
+              :disabled="this.multipleSelection.length === 0">批量删除</el-button>
         </el-form-item>
-
-        <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
-        <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
-        <!--  批量删除  -->
-        <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
       </el-form>
     </div>
 
@@ -30,8 +32,7 @@
           <template slot-scope="scope">
             <el-image
                 style="width: 60px; height: 60px"
-                :src="scope.row.url"
-                :fit="fit" />
+                :src="scope.row.url"/>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
@@ -145,8 +146,6 @@
       </el-dialog>
     </div>
 
-
-
     <!--  分页  -->
     <div class="block" style="margin: 20px">
       <el-pagination
@@ -226,21 +225,7 @@ export default {
     }
   },
   methods: {
-
-    /*    loadGoods: function () {
-          console.log('loadGoods()');
-          let url = 'http://localhost:9091/goods';
-          console.log('url = ' + url);
-          this.axios.get(url).then((response) => {
-            let json = response.data;
-            if (json.code === 20000) {
-              this.tableData = json.data;
-            } else {
-              this.$message.error(response.data.message);
-            }
-          })
-        },*/
-    //查询商品
+//查询商品
     onSubmit() {
       this.axios.post('http://localhost:9091/goods/selectByName',this.formInline)
           .then((response) => {
@@ -249,6 +234,8 @@ export default {
             console.log(this.tableData)
           })
     },
+
+//删除商品
     openDeleteConfirm(id) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -282,7 +269,7 @@ export default {
       this.multipleSelection = val
     },
     batchDelete() {
-      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -296,11 +283,13 @@ export default {
                 type: 'success'
               })
             }
+            this.pageAll();
           })
         })
       }).catch(() => {
       });
     },
+
 // 添加商品
     add(){
       this.dialogFormVisible = true
@@ -361,11 +350,13 @@ export default {
         this.pageAll();
       });
     },
+
+// 导出报表
     exportExcel(){
       location.href = "http://localhost:9091/goods/exportExcel"
     },
 
-    // 分页查询
+// 分页查询
     pageAll() {
       console.log('pageAll()')
       this.axios.get('http://localhost:9091/goods/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
@@ -385,12 +376,6 @@ export default {
       this.pageNum = pageNum;
       this.pageAll()
     },
-
-    select(id){
-
-    },
-
-
 
 
 // 上传图片
@@ -412,14 +397,14 @@ export default {
 
 
   created() {
-    console.log('vue created')
+/*    console.log('vue created')
     this.axios.get('http://localhost:9091/goods').then((response) => {
       if (response.data.code === 20000) {
         this.tableData = response.data.data;
       } else {
         this.$message.error(response.data.message);
       }
-    })
+    })*/
     this.pageAll();
   },
   mounted() {
