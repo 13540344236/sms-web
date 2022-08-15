@@ -15,6 +15,7 @@
         <el-input type="text" auto-complete="false" v-model="loinForm.code" placeholder="点击图片更换验证码"
                   @keydown.enter.native="submitLogin" style="width:188px;margin-right: 10px "></el-input>
         <img :src="vcUrl"  @click="captcha" width="130px" height="40px" alt=""/>
+<!--        <img id="verImg" @click="captcha" width="130px" height="48px"/>-->
       </el-form-item>
 
       <div>
@@ -22,7 +23,7 @@
       </div>
       <el-button type="primary" style="width: 100%" @click="submitLogin">登录</el-button>
       <div>
-        <el-button type="text" @click="regisrer">还没有账号?
+        <el-button type="text" @click="register">还没有账号?
           <el-button type="text">注册新账号</el-button>
         </el-button>
       </div>
@@ -33,13 +34,15 @@
 <script>
 
 let verKey;
+// 获取验证码
+
 export default {
   name: "Login",
 
   data() {
 
     return {
-      vcUrl:'http://localhost:9091/captcha',
+      vcUrl:'http://localhost:9091/captchas/captcha',
       captchaUrl: '',
       loinForm: {
         username: '',
@@ -62,7 +65,7 @@ export default {
       if(regMobile.test(this.loinForm.username)){
         this.$refs['loginForm'].validate((valid) => {
           if (valid) {  // 表单校验合法
-            let url='http://localhost:9091/user/login';
+            let url='http://localhost:9091/logins/login';
             console.log('url >>> ' + url);
             let data={
               'username': this.loinForm.username,
@@ -86,18 +89,32 @@ export default {
         return;
       }
     },
-    regisrer() {
+    register() {
       this.$router.push('/register');
     },
     alter() {
       this.$router.push('/alter');
     },
+
     captcha() {
       //点击验证码更新事件
-      this.vcUrl='http://localhost:9091/captcha?time'+new Date();
-
+      this.axios.get('http://localhost:9091/captchas/captcha').then(res=>{
+        console.log("返回的数据为："+res.data.data.image)
+        this.vcUrl = res.data.data.image
+        console.log("返回的数据为："+res.data.code)
+      });
     },
+  },//methods结束
+
+  created(){
+    //页面刷新自动生成验证码
+    this.axios.get('http://localhost:9091/captchas/captcha').then(res=>{
+      console.log("返回的数据为："+res.data.data.image)
+      this.vcUrl = res.data.data.image
+      console.log("返回的数据为："+res.data.code)
+    });
   }
+
 }
 </script>
 

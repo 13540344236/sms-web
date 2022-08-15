@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item class="btn">
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
+        <el-button @click="resetForm">重置</el-button>
       </el-form-item>
       <div>
         <el-button type="text" @click="regisrer">还没有账号?
@@ -97,7 +97,7 @@ export default {
     });
   },
   resetForm(formName) {
-    this.$refs[formName].resetFields();
+    this.$refs.loginFormRef.resetFileds();
   },
     regisrer() {
       this.$router.push('/register');
