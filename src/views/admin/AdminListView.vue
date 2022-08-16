@@ -46,13 +46,13 @@
 
       <el-table :data="tableData" border style="width: 100%;text-align: center">
 <!--        <el-table-column prop="id" label="用户ID" width="100"></el-table-column>-->
-        <el-table-column prop="staffName" label="姓名" width="120"></el-table-column>
-<!--        <el-table-column prop="gender" label="用户性别" width="80"></el-table-column>-->
+        <el-table-column prop="username" label="姓名" width="120"></el-table-column>
+        <el-table-column prop="nickname" label="昵称" width="80"></el-table-column>
         <el-table-column prop="phone" label="登录账号" width="150"></el-table-column>
 <!--        <el-table-column prop="idNumber" label="身份证号"></el-table-column>-->
 <!--        <el-table-column prop="onDuty" label="是否在岗" width="140"></el-table-column>-->
         <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
-        <el-table-column prop="description" label="描述" ></el-table-column>
+        <el-table-column prop="role" label="角色" ></el-table-column>
         <el-table-column prop="enable" label="是否启用" width="120">
           <template slot-scope="scope">
             <el-switch
@@ -83,29 +83,31 @@
       <el-dialog title="添加用户" :visible.sync="dialogFormVisible" width="50%">
 
         <el-form :model="ruleForm" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-          <el-form-item label="用户姓名" prop="staffName">
-            <el-input v-model="ruleForm.staffName"></el-input>
+          <el-form-item label="用户姓名" prop="userName">
+            <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
 
-          <el-form-item label="用户性别" prop="gender">
-            <el-input v-model="ruleForm.gender"></el-input>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input v-model="ruleForm.nickname"></el-input>
           </el-form-item>
 
-          <el-form-item label="身份证号" prop="idNumber">
-            <el-input v-model="ruleForm.idNumber"></el-input>
+          <el-form-item label="电话" prop="phone">
+            <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
 
-          <el-form-item label="是否在岗" prop="onDuty">
-            <el-input v-model="ruleForm.onDuty"></el-input>
+          <el-form-item label="角色" prop="role">
+            <el-input v-model="ruleForm.role"></el-input>
           </el-form-item>
 
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="ruleForm.email"></el-input>
           </el-form-item>
 
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="ruleForm.description"></el-input>
+          <el-form-item label="地址" prop="address">
+            <el-input v-model="ruleForm.address"></el-input>
           </el-form-item>
+
+
 
 
           <el-form-item>
@@ -118,35 +120,32 @@
       <!--   编辑用户   -->
       <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit" width="50%">
 
-        <el-form :model="ruleForm" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+        <el-form :model="editForm" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
-          <el-form-item label="用户ID" prop="id">
-            <el-input v-model="ruleForm.id" :disabled="true"></el-input>
+          <el-form-item label="用户姓名" prop="userName">
+            <el-input v-model="editForm.username"></el-input>
           </el-form-item>
 
-          <el-form-item label="用户名称" prop="staffName">
-            <el-input v-model="ruleForm.staffName"></el-input>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input v-model="editForm.nickname"></el-input>
           </el-form-item>
 
-          <el-form-item label="用户性别" prop="gender">
-            <el-input v-model="ruleForm.gender"></el-input>
+          <el-form-item label="电话" prop="phone">
+            <el-input v-model="editForm.phone"></el-input>
           </el-form-item>
 
-          <el-form-item label="用户电话号码" prop="phone">
-            <el-input v-model="ruleForm.phone"></el-input>
-          </el-form-item>
-
-          <el-form-item label="身份证号" prop="idNumber">
-            <el-input v-model="ruleForm.idNumber"></el-input>
+          <el-form-item label="角色" prop="role">
+            <el-input v-model="editForm.role"></el-input>
           </el-form-item>
 
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="ruleForm.email"></el-input>
+            <el-input v-model="editForm.email"></el-input>
           </el-form-item>
 
-          <el-form-item label="简介" prop="description">
-            <el-input v-model="ruleForm.description"></el-input>
+          <el-form-item label="地址" prop="address">
+            <el-input v-model="editForm.address"></el-input>
           </el-form-item>
+
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
             <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
@@ -190,20 +189,29 @@ export default {
       dialogFormVisibleSelect:false,
       ruleForm: {
         id:'',
-        staffName: '',
+        username: '',
         password: '',
-        gender: '',
+        nickname: '',
         phone:'',
-        idNumber: '',
-        onDuty: '',
-        email:'',
-        description:'',
-        enable:'',
-        loginCount:'',
-        gmtLastLogin:'',
-        gmtCreate:'',
-        gmtModified:''
-
+        email: '',
+        address:'',
+        createTime:'',
+        avatarUrl:'',
+        role:'',
+        enable:''
+      },
+      editForm: {
+        id:'',
+        username: '',
+        password: '',
+        nickname: '',
+        phone:'',
+        email: '',
+        address:'',
+        createTime:'',
+        avatarUrl:'',
+        role:'',
+        enable:''
       },
     }
   },
@@ -223,7 +231,7 @@ export default {
         },*/
     //查询
     onSubmit() {
-      this.axios.get('http://localhost:9091/admins/' + this.formInline.id + '/selectById')
+      this.axios.get('http://localhost:9091/users/' + this.formInline.id + '/selectById')
           .then((response) => {
             console.log("canshu", response)
             this.tableData = [response.data.data]
@@ -243,7 +251,7 @@ export default {
     },
     handleDelete(id) {
       console.log('将删除id = ' + id + '的用户数据');
-      let url = 'http://localhost:9091/admins/' + id + '/delete'
+      let url = 'http://localhost:9091/users/' + id + '/delete'
       this.axios.post(url).then((response) => {
         let json = response.data;
         if (json.code === 20000) {
@@ -265,7 +273,7 @@ export default {
     },
     selects(id){
       console.log('将查询id = ' + id + '的用户数据');
-      let url = 'http://localhost:9091/admins/' + id + '/selectById'
+      let url = 'http://localhost:9091/users/' + id + '/selectById'
       this.axios.get(url).then((response) => {
         console.log(response)
         let json = response.data;
@@ -282,7 +290,7 @@ export default {
       });
     },
 
-// 添加管理员
+// 添加用户
     add(){
       this.dialogFormVisible = true
     },
@@ -290,7 +298,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // alert('submit!');
-          let url = 'http://localhost:9091/admins/add-new';
+          let url = 'http://localhost:9091/users/add-new';
           console.log('url >>>'+url);
           console.log('data >>>');
           console.log("参数:" + this.ruleForm);
@@ -321,13 +329,13 @@ export default {
 
 // 编辑商品
     edit(val){
-      Object.assign(this.ruleForm,val)
+      Object.assign(this.editForm,val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的用户数据');
-      let url = 'http://localhost:9091/admins/update'
-      this.axios.post(url,this.ruleForm).then((response) => {
+      let url = 'http://localhost:9091/users/update'
+      this.axios.post(url,this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -346,7 +354,7 @@ export default {
 // 分页查询
     pageAll() {
       console.log('pageAll()')
-      this.axios.get('http://localhost:9091/admins/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+      this.axios.get('http://localhost:9091/users/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
           .then((response) => {
             console.log(response)
             this.tableData = response.data.data.list
@@ -375,7 +383,7 @@ export default {
           "Content-Type": "multipart/form-data",
         }
       };
-      let url = "http://localhost:9091/admins/importExcel" //这里填写调用的后端Excel数据处理接口
+      let url = "http://localhost:9091/users/importExcel" //这里填写调用的后端Excel数据处理接口
       this.axios.post(url, formData, config).then(response => {
         let  data = response.status;
         console.log(data)
@@ -393,7 +401,7 @@ export default {
     },
     //导出表格
     adds(){
-      location.href = "http://localhost:9091/admins/exportExcel"
+      location.href = "http://localhost:9091/users/exportExcel"
     },
 
     //是否启用
