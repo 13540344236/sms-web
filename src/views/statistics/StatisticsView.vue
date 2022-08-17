@@ -25,7 +25,7 @@
 
           <el-col :span="5">
             <button class="btn-shine" @click="purchase">
-              <span>进货库存</span>
+              <span>进货入库</span>
             </button>
           </el-col>
         </div>

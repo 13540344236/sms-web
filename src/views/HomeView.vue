@@ -70,7 +70,7 @@
               <span slot="title">库存管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/purchase">进货库存</el-menu-item>
+              <el-menu-item index="/purchase">进货入库</el-menu-item>
               <el-menu-item index="/refundPurchase">退货出库</el-menu-item>
               <el-menu-item index="/salePurchase">销售出库</el-menu-item>
             </el-menu-item-group>

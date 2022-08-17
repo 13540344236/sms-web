@@ -24,7 +24,6 @@
                 row-key="id" default-expand-all
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="菜单ID" width="80"></el-table-column>
         <el-table-column prop="name" label="菜单名称"></el-table-column>
         <el-table-column prop="path" label="路径"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
@@ -56,10 +55,6 @@
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
           <el-form-item label="菜单名称" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
-          </el-form-item>
-
-          <el-form-item label="路径" prop="path">
-            <el-input v-model="ruleForm.path"></el-input>
           </el-form-item>
 
           <el-form-item label="描述" prop="description">
