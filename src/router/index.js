@@ -9,7 +9,7 @@ const routes = [
     path: '/sms',
     name: 'home',
     component: HomeView,
-    redirect: '/sms/goods/list',
+    redirect: '/sms/goods/list',//以下配置重定向的效果：一旦访问 / 路径，就会自动跳转到 /user/list 路径
     children:[
       {
         path:'goods/list',
@@ -154,6 +154,11 @@ const routes = [
     path: '/alter',//找回密码
     name: 'alter',
     component: () => import(/* webpackChunkName: "about" */ '../views/AlterView')
+  },
+  {
+    path: '/loginTest',//找回密码
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "about" */ '../views/LoginTestView')
   },
 ]
 

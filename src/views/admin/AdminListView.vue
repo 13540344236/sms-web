@@ -18,7 +18,7 @@
 
       <!--  查询用户  -->
       <el-dialog title="查询用户" :visible.sync="dialogFormVisibleSelect" width="90%">
-        <el-table :data="selectData" border style="width: 100%;text-align: center">
+        <el-table  border style="width: 100%;text-align: center">
           <el-table-column prop="id" label="用户ID" width="100"></el-table-column>
           <el-table-column prop="staffName" label="用户名称" width="140"></el-table-column>
           <el-table-column prop="gender" label="用户性别" width="80"></el-table-column>
@@ -252,7 +252,9 @@ export default {
     handleDelete(id) {
       console.log('将删除id = ' + id + '的用户数据');
       let url = 'http://localhost:9091/users/' + id + '/delete'
-      this.axios.post(url).then((response) => {
+      this.axios
+          // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+          .post(url).then((response) => {
         let json = response.data;
         if (json.code === 20000) {
           this.$message({
@@ -274,7 +276,9 @@ export default {
     selects(id){
       console.log('将查询id = ' + id + '的用户数据');
       let url = 'http://localhost:9091/users/' + id + '/selectById'
-      this.axios.get(url).then((response) => {
+      this.axios
+          // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+          .get(url).then((response) => {
         console.log(response)
         let json = response.data;
         if (json.code === 20000) {
@@ -302,7 +306,9 @@ export default {
           console.log('url >>>'+url);
           console.log('data >>>');
           console.log("参数:" + this.ruleForm);
-          this.axios.post(url,this.ruleForm).then((response) => {
+          this.axios
+              // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+              .post(url,this.ruleForm).then((response) => {
             console.log(response.data);
             if (response.data.code === 20000){
               this.$message({
@@ -335,7 +341,9 @@ export default {
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的用户数据');
       let url = 'http://localhost:9091/users/update'
-      this.axios.post(url,this.editForm).then((response) => {
+      this.axios
+          // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+          .post(url,this.editForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {
@@ -354,7 +362,9 @@ export default {
 // 分页查询
     pageAll() {
       console.log('pageAll()')
-      this.axios.get('http://localhost:9091/users/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
+      this.axios
+          // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+          .get('http://localhost:9091/users/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
           .then((response) => {
             console.log(response)
             this.tableData = response.data.data.list
@@ -384,7 +394,9 @@ export default {
         }
       };
       let url = "http://localhost:9091/users/importExcel" //这里填写调用的后端Excel数据处理接口
-      this.axios.post(url, formData, config).then(response => {
+      this.axios
+          // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
+          .post(url, formData, config).then(response => {
         let  data = response.status;
         console.log(data)
         if (response.status == 200) {
