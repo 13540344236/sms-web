@@ -139,11 +139,11 @@ export default {
 <style scoped>
 /*边框样式*/
 .loginContainer {
-  border-right: 15px;
+  border-right: 50px;
   background-clip: padding-box;
-  margin: 200px;
-  width: 350px;
-  padding: 15px 35px 15px 35px;
+  margin:200px;
+  width: 420px;
+  padding: 10px 30px 10px 30px;
   background: #fff;
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;

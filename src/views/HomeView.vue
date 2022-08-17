@@ -1,197 +1,135 @@
+<!--主页-->
 <template>
-  <div>
-    <!--  整个页面的外层标签  -->
-    <el-container>
-      <!--   整个页面的上半部分，即顶栏部分   -->
-      <el-header class="layout-header">
+  <el-container>
+    <el-header>
+      <div style="height: 60px;line-height: 50px;text-align: left;border-bottom:1px solid #B7B7B7;">
+        <img src="../assets/logo.png" alt="" style="width: 190px; position: relative;top:8px">
+        <b style="color:black;position: relative;top:-10px ;" class="font" >【后台管理系统】</b>
+        <el-dropdown style="width: 100px;cursor: pointer;float: right;font-size: 15px">
+          <div>
+            <span slot="">陈鑫</span>
+            <i class="el-icon-arrow-down" style="margin-left: 5px "></i>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item ><span style="text-decoration: none" @click="logout">退出登录</span></el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
 
-        <h1 style="color:white;margin: 15px">聚贤庄超市后台管理系统
-          <span style="float: right;font-size: 15px">欢迎xxx
-                    &nbsp&nbsp<a href="javascript:void(0)" @click="logout()">退出登录</a>
-          </span>
-        </h1>
-      </el-header>
-      <!--   整个页面的下半部分，是一个容器   -->
-      <el-container class="layout-body">
-        <!--下半部分的左侧，即左边栏，将显示菜单-->
-        <el-aside class="layout-aside">
-          <!--el-menu是整个菜单-->
-          <!--在el-menu中补充router属性（不写属性值即表示true），即可将各菜单项的index作为URL进行跳转-->
-          <!--default-active用于配置默认激活的菜单项的URL（配置为URL时需结合router一起使用）-->
-          <el-menu
-              router
-              :default-active="this.$router.currentRoute.path"
-              class="el-menu-vertical-demo">
-            <!--el-submenu是允许包含子级的菜单，但此标签本身并不是菜单项-->
+    </el-header>
+    <el-container style="height:100vh; ">
+      <el-aside :width="sideWidth+'px'" style="background-color: rgb(238, 241, 246)" height="100%">
+        <el-menu style="height: 100%; overflow-x:hidden"
+                 background-color="rgb(48,65,84)"
+                 text-color="rgb(191,203,217)"
+                 active-text-color="#fff"
+                 :collapse-transition="false"
+                 :collapse="isCollapse"
+                 router>
 
-            <el-submenu index="1">
-              <!--在el-submenu下的template用于配置包含子菜单的父级项-->
-              <!--例如：在“用户管理”下有“用户列表”和“添加用户”，此处使用template配置的就是“用户管理”-->
-              <template slot="title">
-                <i class="el-icon-s-shop"></i>
-                <span>系统管理</span>
-              </template>
-              <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/admin/list">
-                <i class="el-icon-user-solid"></i>
-                <span>用户管理</span>
-              </el-menu-item>
+          <el-menu-item index="/statistice">
+            <i class="el-icon-s-home"></i>
+            <span slot="title">首页</span>
+          </el-menu-item>
 
-              <el-menu-item index="/sms/role/list">
-                <i class="el-icon-user"></i>
-                <span>角色管理</span>
-              </el-menu-item>
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-s-platform "></i>
+              <span slot="title">系统管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/admin1">用户管理</el-menu-item>
+              <el-menu-item index="/role">角色管理</el-menu-item>
+              <el-menu-item index="/menu">菜单管理</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title"><i class="el-icon-user-solid"></i>
+              <span slot="title">人员管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/admins">员工管理</el-menu-item>
+              <el-menu-item index="/member">会员管理</el-menu-item>
+              <el-menu-item index="/supplier">供应商管理</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title"><i class="el-icon-s-shop"></i>
+              <span slot="title">商品管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/goods">商品列表</el-menu-item>
+              <el-menu-item index="/category">商品分类</el-menu-item>
+              <el-menu-item index="/goodsBad">商品报损</el-menu-item>
+              <el-menu-item index="/goodsMax">商品报溢</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="4">
+            <template slot="title"><i class="el-icon-s-home"></i>
+              <span slot="title">库存管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/purchase">进货库存</el-menu-item>
+              <el-menu-item index="/refundPurchase">退货出库</el-menu-item>
+              <el-menu-item index="/salePurchase">销售出库</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+      <el-container>
+        <el-header style="font-size: 12px;  line-height: 60px; display:flex ">
+          <div style="  flex: 1px;font-size: 28px;">
+            <span :class="collapseBtnClass" style="cursor: pointer;" @click="collapse"></span>
+          </div>
+        </el-header>
 
-              <el-menu-item index="/sms/menu/list">
-                <i class="el-icon-user"></i>
-                <span>菜单管理</span>
-              </el-menu-item>
-
-            </el-submenu>
-
-
-
-            <el-submenu index="2">
-              <!--在el-submenu下的template用于配置包含子菜单的父级项-->
-              <!--例如：在“用户管理”下有“用户列表”和“添加用户”，此处使用template配置的就是“用户管理”-->
-              <template slot="title">
-                <i class="el-icon-user-solid"></i>
-                <span>人员管理</span>
-              </template>
-              <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/admins/list">
-                <i class="el-icon-user"></i>
-                <span>员工管理</span>
-              </el-menu-item>
-
-              <el-menu-item index="/sms/supplier/list">
-                <i class="el-icon-house"></i>
-                <span>供应商管理</span>
-              </el-menu-item>
-
-
-              <el-menu-item index="/sms/member/list">
-                <i class="el-icon-s-goods"></i>
-                <span>会员管理</span>
-              </el-menu-item>
-
-            </el-submenu>
-
-
-            <el-submenu index="3">
-              <!--在el-submenu下的template用于配置包含子菜单的父级项-->
-              <!--例如：在“用户管理”下有“用户列表”和“添加用户”，此处使用template配置的就是“用户管理”-->
-              <template slot="title">
-                <i class="el-icon-s-shop"></i>
-                <span>商品管理</span>
-              </template>
-              <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/goods/list">
-                <i class="el-icon-s-goods"></i>
-                <span>商品列表</span>
-              </el-menu-item>
-              <el-menu-item index="/sms/category/list">
-                <i class="el-icon-goods"></i>
-                <span>商品分类</span>
-              </el-menu-item>
-              <el-menu-item index="/sms/goodsBad/list">
-                <i class="el-icon-s-goods"></i>
-                <span>商品报损</span>
-              </el-menu-item>
-              <el-menu-item index="/sms/goodsMax/list">
-                <i class="el-icon-goods"></i>
-                <span>商品报溢</span>
-              </el-menu-item>
-
-              
-            </el-submenu>
-
-
-            <el-submenu index="4">
-              <!-- 在el-submenu下的template用于配置包含子菜单的父级项 -->
-              <!-- 例如：在“用户管理”下有“用户列表”和“添加用户”，此处使用template配置的就是“用户管理” -->
-              <template slot="title">
-                <i class="el-icon-house"></i>
-                <span>库存管理</span>
-              </template>
-              <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/purchase/list">
-                <i class="el-icon-circle-plus"></i>
-                <span>进货库存</span>
-              </el-menu-item>
-              <el-menu-item index="/sms/refundPurchase/list">
-                <i class="el-icon-remove"></i>
-                <span>退货出库</span>
-              </el-menu-item>
-              <el-menu-item index="/sms/salePurchase/list">
-                <i class="el-icon-remove-outline"></i>
-                <span>销售出库</span>
-              </el-menu-item>
-
-            </el-submenu>
-
-
-            <el-submenu index="5">
-              <!-- 在el-submenu下的template用于配置包含子菜单的父级项 -->
-              <!-- 例如：在“用户管理”下有“用户列表”和“添加用户”，此处使用template配置的就是“用户管理” -->
-              <template slot="title">
-                <i class="el-icon-tickets"></i>
-                <span>统计报表分析</span>
-              </template>
-              <!-- el-menu-item表示菜单项 -->
-              <el-menu-item index="/sms/statistice">
-                <i class="el-icon-tickets"></i>
-                <span>统计报表分析</span>
-              </el-menu-item>
-            </el-submenu>
-
-
-          </el-menu>
-
-        </el-aside>
-        <!-- 下半部分的右侧，即主体部分，将由router-view实现具体显示 -->
         <el-main>
-          <!--将由router-view实现具体显示-->
           <router-view/>
         </el-main>
+
       </el-container>
     </el-container>
-  </div>
+  </el-container>
+
+
 </template>
 
-<style>
-* {
-  margin: 0
-}
 
-.layout-header {
-  background-color:#1284b4;
-
-}
-
-
-.layout-body {
-  position: absolute;
-  top: 60px;
-  bottom: 0;
-  left: 0;
-  right: 0
-}
-
-.layout-aside {
-  background-color:#70c0ec;
-}
-</style>
 <script>
 export default {
-  methods: {
-    logout() {
-      // 清空LocalStorage中的数据
-      localStorage.clear();
-      // 跳转回主页
-      this.$router.push('/');
+  name: 'Home',
+  data() {
+    const item = {};
+    return {
+      tableData: Array(10).fill(item),
+      collapseBtnClass: 'el-icon-s-fold',
+      isCollapse: false,
+      sideWidth: 200
     }
-  }
+  },
+
+
+  methods: {
+    collapse() {
+      this.isCollapse = !this.isCollapse
+      if (this.isCollapse) {
+        this.sideWidth = 64
+        this.collapseBtnClass = 'el-icon-s-unfold'
+      } else {
+        this.sideWidth = 200
+        this.collapseBtnClass = 'el-icon-s-fold'
+      }
+    },
+    logout() {
+      this.$router.push('/login');
+      this.$message.success("退出成功")
+    }
+  },
 }
 </script>
-
+<style>
+.font{
+  font-family:"PingFang SC",sans-serif;
+}
+</style>

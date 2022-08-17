@@ -35,7 +35,7 @@
 
       <!--  查询员工  -->
       <el-dialog title="查询员工" :visible.sync="dialogFormVisibleSelect" width="90%">
-      <el-table :data="selectData" border style="width: 100%;text-align: center">
+      <el-table  border style="width: 100%;text-align: center">
         <el-table-column prop="id" label="员工ID" width="100"></el-table-column>
         <el-table-column prop="staffName" label="员工名称" width="140"></el-table-column>
         <el-table-column prop="gender" label="员工性别" width="80"></el-table-column>
