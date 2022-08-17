@@ -138,6 +138,15 @@ const routes = [
           isLogin:true
         }
       },
+      {
+        path:'menu/list',
+        component: () => import('../views/admin/MenuView'),
+        meta: {
+          title: '超市库存管理平台 -- 菜单管理',
+          //路由权限
+          isLogin:true
+        }
+      },
     ]
   },
   {

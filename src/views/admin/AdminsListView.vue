@@ -10,7 +10,7 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
         <el-button style="height: 40px" type="primary" @click="add">添加员工</el-button>
-        <el-button style="margin-left:20px" type="primary"@click="adds">导出员工信息</el-button>
+        <el-button style="margin-left:20px" type="primary" @click="adds">导出员工信息</el-button>
       </el-form>
 
 <!--      <el-button type="primary"
@@ -189,6 +189,7 @@ export default {
       formInline: {
         id: ''
       },
+      selectData: [],
       tableData: [],
       input:'',
       dialogFormVisible:false,

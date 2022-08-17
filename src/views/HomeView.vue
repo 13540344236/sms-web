@@ -42,6 +42,11 @@
                 <span>角色管理</span>
               </el-menu-item>
 
+              <el-menu-item index="/sms/menu/list">
+                <i class="el-icon-user"></i>
+                <span>菜单管理</span>
+              </el-menu-item>
+
             </el-submenu>
 
 
