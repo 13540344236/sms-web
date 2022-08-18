@@ -19,12 +19,12 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="商品ID" width="80"></el-table-column>
+        <el-table-column prop="id" label="商品编号" width="80"></el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
         <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
+        <el-table-column prop="purchasePrice"  label="采购价格" ></el-table-column>
+        <el-table-column prop="salePrice"    label="销售价格" ></el-table-column>
         <el-table-column prop="saleQuantity" label="销售数量" width="140"></el-table-column>
-        <el-table-column prop="customerName" label="客户姓名" width="140"></el-table-column>
-        <el-table-column prop="customerPhone" label="客服电话"></el-table-column>
         <el-table-column prop="operatingStaff" label="操作员工" width="140"></el-table-column>
         <el-table-column prop="gmtCreate" label="操作时间"></el-table-column>
         <el-table-column label="操作" width="150">
@@ -57,12 +57,12 @@
             <el-input v-model="ruleForm.saleQuantity"></el-input>
           </el-form-item>
 
-          <el-form-item label="客服名称" prop="customerName">
-            <el-input v-model="ruleForm.customerName"></el-input>
+          <el-form-item label="采购价格" prop="purchasePrice">
+            <el-input v-model="ruleForm.purchasePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="客服电话" prop="customerPhone">
-            <el-input v-model="ruleForm.customerPhone"></el-input>
+          <el-form-item label="销售价格" prop="salePrice">
+            <el-input v-model="ruleForm.salePrice"></el-input>
           </el-form-item>
 
           <el-form-item label="操作员工" prop="operatingStaff">
@@ -92,14 +92,14 @@
           <el-form-item label="销售数量" prop="saleQuantity">
             <el-input v-model="editForm.saleQuantity"></el-input>
           </el-form-item>
-
-          <el-form-item label="客服名称" prop="customerName">
-            <el-input v-model="editForm.customerName"></el-input>
+          <el-form-item label="采购价格" prop="purchasePrice">
+            <el-input v-model="editForm.purchasePrice"></el-input>
           </el-form-item>
 
-          <el-form-item label="客服电话" prop="customerPhone">
-            <el-input v-model="editForm.customerPhone"></el-input>
+          <el-form-item label="销售价格" prop="salePrice">
+            <el-input v-model="editForm.salePrice"></el-input>
           </el-form-item>
+
 
           <el-form-item label="操作员工" prop="operatingStaff">
             <el-input v-model="editForm.operatingStaff"></el-input>
@@ -149,6 +149,8 @@ export default {
         name: '',
         goodsSpecification:'',
         saleQuantity:'',
+        purchasePrice:'',
+        salePrice:'',
         customerName:'',
         customerPhone:'',
         operatingStaff:'',
@@ -160,6 +162,8 @@ export default {
         name: '',
         goodsSpecification:'',
         saleQuantity:'',
+        purchasePrice:'',
+        salePrice:'',
         customerName:'',
         customerPhone:'',
         operatingStaff:'',

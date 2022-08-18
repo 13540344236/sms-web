@@ -32,22 +32,16 @@
       </div>
     </el-card>
 
-    <el-card class="box-card1" style="margin-top:30px">
+    <el-card class="box-card1" style="margin-top:10px">
       <div>
-        <span>销售量前6名</span>
+        <span>销售统计</span>
       </div>
       <div>
-        <el-col :span="12">
-          <div id="main" style="width: 500px;height: 400px"></div>
-        </el-col>
-
-        <el-col :span="12">
-          <div id="pie" style="width: 500px;height: 400px"></div>
-        </el-col>
+          <div id="main" style="width: 800px ; height: 400px"></div>
       </div>
     </el-card>
 
-    <el-card class="box-card1" style="margin-top:30px">
+    <el-card class="box-card1" style="margin-top:10px">
       <div>
         <span>财务报表</span>
       </div>
@@ -77,8 +71,137 @@ export default {
     }
   },
   methods: {
-
+    admin1(){
+      this.$router.push('/admin1');
+    },
+    admins(){
+      this.$router.push('/admins');
+    },
+    goods(){
+      this.$router.push('/goods');
+    },
+    purchase(){
+      this.$router.push('/purchase');
+    },
+    //销量统计(柱形图\折线图)
     initCharts1() {
+      const setEchartWH = { //设置控制图表大小变量
+        width: 1500,
+        height: 400
+      };
+      const _this = this
+      // 基于准备好的dom，初始化echarts实例
+      // let myChart2 = echarts.init(this.$refs.main);
+      var chartDom = document.getElementById('main');
+      var myChart = echarts.init(chartDom);
+      var orderCounts = [];
+      var salesSums = [];
+      var clickDates =[];
+      //请求后台数据
+      this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
+        if (resp.data.code == 20000) {
+          let lists = resp.data.data;
+          for (var i = lists.length-1; i >=0 ; i--) {
+            orderCounts.push(lists[i].orderCount);
+            salesSums.push(lists[i].salesSum)
+            clickDates.push(lists[i].clickDate)
+          }
+          console.log("日期",clickDates)
+          // 绘制图表
+          myChart.setOption(
+              {
+                grid:{
+
+                  //与绝对定位相似，top，left，right，bottom 设定是根据上级盒子宽高来计算
+                  top:"15%",
+                  left:"10%",
+                  right:"10%",
+                  bottom:"20%"
+
+                },
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                      color: '#999'
+                    }
+                  }
+                },
+                toolbox: {
+                  feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                  }
+                },
+                legend: {
+                  data: ['每日销售额',  '每日订单总数']
+                },
+                xAxis: [
+                  {
+                    type: 'category',
+                    data: clickDates,
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  }
+                ],
+                yAxis: [
+                  {
+                    type: 'value',
+                    name: '每日销售额',
+                    min: 0,
+                    max: 250,
+                    interval: 50,
+                    axisLabel: {
+                      formatter: '{value} 元'//左坐标轴
+                    }
+                  },
+                  {
+                    type: 'value',
+                    name: '销量',
+                    min: 0,
+                    max: 25,
+                    interval: 5,
+                    axisLabel: {
+                      formatter: '{value} 单'
+                    }
+                  }
+                ],
+                series: [
+                  {
+                    name: '每日销售额',
+                    type: 'line',
+                    tooltip: {
+                      valueFormatter: function (value) {
+                        return value + ' 元';
+                      }
+                    },
+                    data: salesSums,
+                  },
+                  {
+                    name: '每日订单总数',
+                    type: 'bar',
+                    barWidth:'40%',
+                    yAxisIndex: 1,
+                    tooltip: {
+                      valueFormatter: function (value) {
+                        return value + ' 单';
+                      }
+                    },
+                    data: orderCounts,
+                  }
+                ]
+              }
+          );
+
+        }
+      })
+    },
+
+   /* initCharts2(){
       const _this = this
       // 基于准备好的dom，初始化echarts实例
       // let myChart2 = echarts.init(this.$refs.main);
@@ -90,12 +213,10 @@ export default {
       this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
         if (resp.data.code == 20000) {
           let lists = resp.data.data;
-          console.log("list",lists)
           for (var i = 0; i <lists.length; i++) {
             values.push(lists[i].value);
             names.push(lists[i].name)
           }
-
           // 绘制图表
           myChart.setOption({
             xAxis: {
@@ -108,86 +229,33 @@ export default {
             series: [
               {
                 data:values,
-                type: 'line'
+                type: 'line',
+                smooth: true
+              },
+              {
+                data: values,
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                  color: 'rgba(180, 180, 180, 0.2)'
+                }
               }
             ]
           });
 
         }
       })
-
-    },
+    },*/
   },
   mounted(){
     this.initCharts1();
+
+  /*  this.initCharts2();*/
   },
   // methods:{
-  //   admin1(){
-  //     this.$router.push('/admin1');
-  //   },
-  //   admins(){
-  //     this.$router.push('/admins');
-  //   },
-  //   goods(){
-  //     this.$router.push('/goods');
-  //   },
-  //   purchase(){
-  //     this.$router.push('/purchase');
-  //   },
   //
   // },
   // mounted() {
-  //   this.initCharts();
-  //   //柱形图
-  //   let option = {
-  //     xAxis: {
-  //       type: 'category',
-  //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-  //     },
-  //     yAxis: {
-  //       type: 'value'
-  //     },
-  //     series: [
-  //       {
-  //         data: [120, 200, 150, 80, 70],
-  //         type: 'line'
-  //       },
-  //       {
-  //         data: [120, 200, 150, 80, 70],
-  //         type: 'bar'
-  //       },
-  //     ]
-  //   };
-  //   const chartDom = document.getElementById('main');
-  //   const myChart = echarts.init(chartDom);
-  //   //获取后端数据
-  //   // this.axios.get("http://localhost:9091/echarts/example").then(res=>{
-  //   //   console.log("res:"+res.data)
-  //   //   option.xAxis.data=res.data.x;
-  //   //   option.series[0].data=res.data.y;
-  //   //   option.series[1].data=res.data.y;
-  //   //   myChart.setOption(option)
-  //   // })
-  //
-  //   myChart.setOption({
-  //     series: [
-  //       {
-  //         label: {
-  //           show: this.isShownbr,
-  //         }
-  //       },
-  //       {
-  //         label: {
-  //           show: this.isShownbr,
-  //         }
-  //       },
-  //     ]
-  //   });
-  //   myChart.setOption(option);
-  //   // console.log("op:",this.option.xAxis.data)
-  //   // console.log("option:",this.option.map(r=>r.xAxis))
-  //
-  //
   //   // 饼图
   //   const pieOption = {
   //     title: {
