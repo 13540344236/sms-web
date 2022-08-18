@@ -72,16 +72,16 @@ export default {
     }
   },
   methods: {
-    admin1(){
+    admin1() {
       this.$router.push('/admin1');
     },
-    admins(){
+    admins() {
       this.$router.push('/admins');
     },
-    goods(){
+    goods() {
       this.$router.push('/goods');
     },
-    purchase(){
+    purchase() {
       this.$router.push('/purchase');
     },
     //销量统计(柱形图\折线图)
@@ -97,27 +97,27 @@ export default {
       var myChart = echarts.init(chartDom);
       var orderCounts = [];
       var salesSums = [];
-      var clickDates =[];
+      var clickDates = [];
       //请求后台数据
       this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
         if (resp.data.code == 20000) {
           let lists = resp.data.data;
-          for (var i = lists.length-1; i >=0 ; i--) {
+          for (var i = lists.length - 1; i >= 0; i--) {
             orderCounts.push(lists[i].orderCount);
             salesSums.push(lists[i].salesSum)
             clickDates.push(lists[i].clickDate)
           }
-          console.log("日期",clickDates)
+          console.log("日期", clickDates)
           // 绘制图表
           myChart.setOption(
               {
-                grid:{
+                grid: {
 
                   //与绝对定位相似，top，left，right，bottom 设定是根据上级盒子宽高来计算
-                  top:"15%",
-                  left:"10%",
-                  right:"10%",
-                  bottom:"20%"
+                  top: "15%",
+                  left: "10%",
+                  right: "10%",
+                  bottom: "20%"
 
                 },
                 tooltip: {
@@ -131,14 +131,14 @@ export default {
                 },
                 toolbox: {
                   feature: {
-                    dataView: { show: true, readOnly: false },
-                    magicType: { show: true, type: ['line', 'bar'] },
-                    restore: { show: true },
-                    saveAsImage: { show: true }
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
                   }
                 },
                 legend: {
-                  data: ['每日销售额',  '每日订单总数']
+                  data: ['每日销售额', '每日订单总数']
                 },
                 xAxis: [
                   {
@@ -185,7 +185,7 @@ export default {
                   {
                     name: '每日订单总数',
                     type: 'bar',
-                    barWidth:'40%',
+                    barWidth: '40%',
                     yAxisIndex: 1,
                     tooltip: {
                       valueFormatter: function (value) {
@@ -200,271 +200,275 @@ export default {
 
         }
       })
-    },
-
-   /* initCharts2(){
-      const _this = this
-      // 基于准备好的dom，初始化echarts实例
-      // let myChart2 = echarts.init(this.$refs.main);
-      var chartDom = document.getElementById('main');
-      var myChart = echarts.init(chartDom);
-      var values = [];
-      var names = [];
-      //请求后台数据
-      this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
-        if (resp.data.code == 20000) {
-          let lists = resp.data.data;
-          console.log("list",lists)
-          for (var i = 0; i <lists.length; i++) {
-            values.push(lists[i].value);
-            names.push(lists[i].name)
-          }
-
-          // 绘制图表
-          myChart.setOption({
-            xAxis: {
-              type: 'category',
-              data: names
-            },
-            yAxis: {
-              type: 'value'
-            },
-            series: [
-              {
-                data:values,
-                type: 'line'
-              }
-            ]
-          });
-
-        }
-      })
-
-    },
+    }
   },
-  mounted(){
+  mounted() {
     this.initCharts1();
-  },
-  // methods:{
-  //   admin1(){
-  //     this.$router.push('/admin1');
-  //   },
-  //   admins(){
-  //     this.$router.push('/admins');
-  //   },
-  //   goods(){
-  //     this.$router.push('/goods');
-  //   },
-  //   purchase(){
-  //     this.$router.push('/purchase');
-  //   },
-  //
-  // },
-  // mounted() {
-  //   this.initCharts();
-  //   //柱形图
-  //   let option = {
-  //     xAxis: {
-  //       type: 'category',
-  //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-  //     },
-  //     yAxis: {
-  //       type: 'value'
-  //     },
-  //     series: [
-  //       {
-  //         data: [120, 200, 150, 80, 70],
-  //         type: 'line'
-  //       },
-  //       {
-  //         data: [120, 200, 150, 80, 70],
-  //         type: 'bar'
-  //       },
-  //     ]
-  //   };
-  //   const chartDom = document.getElementById('main');
-  //   const myChart = echarts.init(chartDom);
-  //   //获取后端数据
-  //   // this.axios.get("http://localhost:9091/echarts/example").then(res=>{
-  //   //   console.log("res:"+res.data)
-  //   //   option.xAxis.data=res.data.x;
-  //   //   option.series[0].data=res.data.y;
-  //   //   option.series[1].data=res.data.y;
-  //   //   myChart.setOption(option)
-  //   // })
-  //
-  //   myChart.setOption({
-  //     series: [
-  //       {
-  //         label: {
-  //           show: this.isShownbr,
-  //         }
-  //       },
-  //       {
-  //         label: {
-  //           show: this.isShownbr,
-  //         }
-  //       },
-  //     ]
-  //   });
-  //   myChart.setOption(option);
-  //   // console.log("op:",this.option.xAxis.data)
-  //   // console.log("option:",this.option.map(r=>r.xAxis))
-  //
-  //
-  //   // 饼图
-  //   const pieOption = {
-  //     title: {
-  //       text: '商品类别占比',
-  //       subtext: 'Fake Data',
-  //       left: 'center'
-  //     },
-  //     tooltip: {
-  //       trigger: 'item'
-  //     },
-  //     legend: {
-  //       orient: 'vertical',
-  //       left: 'left'
-  //     },
-  //     series: [
-  //       {
-  //         name: 'Access From',
-  //         type: 'pie',
-  //         radius: '50%',
-  //         data: [
-  //           {value: 1048, name: 'Search Engine'},
-  //           {value: 735, name: 'Direct'},
-  //           {value: 580, name: 'Email'},
-  //           {value: 484, name: 'Union Ads'},
-  //           {value: 300, name: 'Video Ads'}
-  //         ],
-  //         emphasis: {
-  //           itemStyle: {
-  //             shadowBlur: 10,
-  //             shadowOffsetX: 0,
-  //             shadowColor: 'rgba(0, 0, 0, 0.5)'
-  //           }
-  //         }
-  //       }
-  //     ]
-  //   };
-  //   const pietDom = document.getElementById('pie');
-  //   const pieChart = echarts.init(pietDom);
-  //   pieChart.setOption(pieOption)
-  //
-  //   //测柱图
-  //   const barOption = {
-  //     tooltip: {
-  //       trigger: 'axis',
-  //       axisPointer: {
-  //         // Use axis to trigger tooltip
-  //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-  //       }
-  //     },
-  //     legend: {},
-  //     grid: {
-  //       left: '3%',
-  //       right: '4%',
-  //       bottom: '3%',
-  //       containLabel: true
-  //     },
-  //     xAxis: {
-  //       type: 'value'
-  //     },
-  //     yAxis: {
-  //       type: 'category',
-  //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  //     },
-  //     series: [
-  //       {
-  //         name: 'Direct',
-  //         type: 'bar',
-  //         stack: 'total',
-  //         label: {
-  //           show: true
-  //         },
-  //         emphasis: {
-  //           focus: 'series'
-  //         },
-  //         data: [320, 302, 301, 334, 390, 330, 320]
-  //       },
-  //       {
-  //         name: 'Mail Ad',
-  //         type: 'bar',
-  //         stack: 'total',
-  //         label: {
-  //           show: true
-  //         },
-  //         emphasis: {
-  //           focus: 'series'
-  //         },
-  //         data: [120, 132, 101, 134, 90, 230, 210]
-  //       },
-  //       {
-  //         name: 'Affiliate Ad',
-  //         type: 'bar',
-  //         stack: 'total',
-  //         label: {
-  //           show: true
-  //         },
-  //         emphasis: {
-  //           focus: 'series'
-  //         },
-  //         data: [220, 182, 191, 234, 290, 330, 310]
-  //       },
-  //       {
-  //         name: 'Video Ad',
-  //         type: 'bar',
-  //         stack: 'total',
-  //         label: {
-  //           show: true
-  //         },
-  //         emphasis: {
-  //           focus: 'series'
-  //         },
-  //         data: [150, 212, 201, 154, 190, 330, 410]
-  //       },
-  //       {
-  //         name: 'Search Engine',
-  //         type: 'bar',
-  //         stack: 'total',
-  //         label: {
-  //           show: true
-  //         },
-  //         emphasis: {
-  //           focus: 'series'
-  //         },
-  //         data: [820, 832, 901, 934, 1290, 1330, 1320]
-  //       }
-  //     ]
-  //   };
-  //   const barDom = document.getElementById('bar');
-  //   const barChart = echarts.init(barDom);
-  //   barChart.setOption(barOption)
-  //
-  //   //年度财报
-  //   const arrOption = {
-  //     legend: {},
-  //     tooltip: {},
-  //     dataset: {
-  //       dimensions: ['product', '2020', '2021', '2022'],
-  //       source: [
-  //         {product: 'Matcha Latte', 2020: 43.3, 2021: 85.8, 2022: 93.7},
-  //         {product: 'Milk Tea', 2020: 83.1, 2021: 73.4, 2022: 55.1},
-  //         {product: 'Cheese Cocoa', 2020: 86.4, 2021: 65.2, 2022: 82.5},
-  //         {product: 'Walnut Brownie', 2020: 72.4, 2021: 53.9, 2022: 39.1}
-  //       ]
-  //     },
-  //     xAxis: {type: 'category'},
-  //     yAxis: {},
-  //
-  //     series: [{type: 'bar'}, {type: 'bar'}, {type: 'bar'}]
-  //   };
-  //   const arrDom = document.getElementById('arr');
-  //   const arrChart = echarts.init(arrDom);
-  //   arrChart.setOption(arrOption);
-  //
-  // },
+  }
+
+  /* initCharts2(){
+     const _this = this
+     // 基于准备好的dom，初始化echarts实例
+     // let myChart2 = echarts.init(this.$refs.main);
+     var chartDom = document.getElementById('main');
+     var myChart = echarts.init(chartDom);
+     var values = [];
+     var names = [];
+     //请求后台数据
+     this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
+       if (resp.data.code == 20000) {
+         let lists = resp.data.data;
+         console.log("list",lists)
+         for (var i = 0; i <lists.length; i++) {
+           values.push(lists[i].value);
+           names.push(lists[i].name)
+         }
+
+         // 绘制图表
+         myChart.setOption({
+           xAxis: {
+             type: 'category',
+             data: names
+           },
+           yAxis: {
+             type: 'value'
+           },
+           series: [
+             {
+               data:values,
+               type: 'line'
+             }
+           ]
+         });
+
+       }
+     })
+
+   },
+ },
+ mounted(){
+   this.initCharts1();
+ },
+ // methods:{
+ //   admin1(){
+ //     this.$router.push('/admin1');
+ //   },
+ //   admins(){
+ //     this.$router.push('/admins');
+ //   },
+ //   goods(){
+ //     this.$router.push('/goods');
+ //   },
+ //   purchase(){
+ //     this.$router.push('/purchase');
+ //   },
+ //
+ // },
+ // mounted() {
+ //   this.initCharts();
+ //   //柱形图
+ //   let option = {
+ //     xAxis: {
+ //       type: 'category',
+ //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+ //     },
+ //     yAxis: {
+ //       type: 'value'
+ //     },
+ //     series: [
+ //       {
+ //         data: [120, 200, 150, 80, 70],
+ //         type: 'line'
+ //       },
+ //       {
+ //         data: [120, 200, 150, 80, 70],
+ //         type: 'bar'
+ //       },
+ //     ]
+ //   };
+ //   const chartDom = document.getElementById('main');
+ //   const myChart = echarts.init(chartDom);
+ //   //获取后端数据
+ //   // this.axios.get("http://localhost:9091/echarts/example").then(res=>{
+ //   //   console.log("res:"+res.data)
+ //   //   option.xAxis.data=res.data.x;
+ //   //   option.series[0].data=res.data.y;
+ //   //   option.series[1].data=res.data.y;
+ //   //   myChart.setOption(option)
+ //   // })
+ //
+ //   myChart.setOption({
+ //     series: [
+ //       {
+ //         label: {
+ //           show: this.isShownbr,
+ //         }
+ //       },
+ //       {
+ //         label: {
+ //           show: this.isShownbr,
+ //         }
+ //       },
+ //     ]
+ //   });
+ //   myChart.setOption(option);
+ //   // console.log("op:",this.option.xAxis.data)
+ //   // console.log("option:",this.option.map(r=>r.xAxis))
+ //
+ //
+ //   // 饼图
+ //   const pieOption = {
+ //     title: {
+ //       text: '商品类别占比',
+ //       subtext: 'Fake Data',
+ //       left: 'center'
+ //     },
+ //     tooltip: {
+ //       trigger: 'item'
+ //     },
+ //     legend: {
+ //       orient: 'vertical',
+ //       left: 'left'
+ //     },
+ //     series: [
+ //       {
+ //         name: 'Access From',
+ //         type: 'pie',
+ //         radius: '50%',
+ //         data: [
+ //           {value: 1048, name: 'Search Engine'},
+ //           {value: 735, name: 'Direct'},
+ //           {value: 580, name: 'Email'},
+ //           {value: 484, name: 'Union Ads'},
+ //           {value: 300, name: 'Video Ads'}
+ //         ],
+ //         emphasis: {
+ //           itemStyle: {
+ //             shadowBlur: 10,
+ //             shadowOffsetX: 0,
+ //             shadowColor: 'rgba(0, 0, 0, 0.5)'
+ //           }
+ //         }
+ //       }
+ //     ]
+ //   };
+ //   const pietDom = document.getElementById('pie');
+ //   const pieChart = echarts.init(pietDom);
+ //   pieChart.setOption(pieOption)
+ //
+ //   //测柱图
+ //   const barOption = {
+ //     tooltip: {
+ //       trigger: 'axis',
+ //       axisPointer: {
+ //         // Use axis to trigger tooltip
+ //         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+ //       }
+ //     },
+ //     legend: {},
+ //     grid: {
+ //       left: '3%',
+ //       right: '4%',
+ //       bottom: '3%',
+ //       containLabel: true
+ //     },
+ //     xAxis: {
+ //       type: 'value'
+ //     },
+ //     yAxis: {
+ //       type: 'category',
+ //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+ //     },
+ //     series: [
+ //       {
+ //         name: 'Direct',
+ //         type: 'bar',
+ //         stack: 'total',
+ //         label: {
+ //           show: true
+ //         },
+ //         emphasis: {
+ //           focus: 'series'
+ //         },
+ //         data: [320, 302, 301, 334, 390, 330, 320]
+ //       },
+ //       {
+ //         name: 'Mail Ad',
+ //         type: 'bar',
+ //         stack: 'total',
+ //         label: {
+ //           show: true
+ //         },
+ //         emphasis: {
+ //           focus: 'series'
+ //         },
+ //         data: [120, 132, 101, 134, 90, 230, 210]
+ //       },
+ //       {
+ //         name: 'Affiliate Ad',
+ //         type: 'bar',
+ //         stack: 'total',
+ //         label: {
+ //           show: true
+ //         },
+ //         emphasis: {
+ //           focus: 'series'
+ //         },
+ //         data: [220, 182, 191, 234, 290, 330, 310]
+ //       },
+ //       {
+ //         name: 'Video Ad',
+ //         type: 'bar',
+ //         stack: 'total',
+ //         label: {
+ //           show: true
+ //         },
+ //         emphasis: {
+ //           focus: 'series'
+ //         },
+ //         data: [150, 212, 201, 154, 190, 330, 410]
+ //       },
+ //       {
+ //         name: 'Search Engine',
+ //         type: 'bar',
+ //         stack: 'total',
+ //         label: {
+ //           show: true
+ //         },
+ //         emphasis: {
+ //           focus: 'series'
+ //         },
+ //         data: [820, 832, 901, 934, 1290, 1330, 1320]
+ //       }
+ //     ]
+ //   };
+ //   const barDom = document.getElementById('bar');
+ //   const barChart = echarts.init(barDom);
+ //   barChart.setOption(barOption)
+ //
+ //   //年度财报
+ //   const arrOption = {
+ //     legend: {},
+ //     tooltip: {},
+ //     dataset: {
+ //       dimensions: ['product', '2020', '2021', '2022'],
+ //       source: [
+ //         {product: 'Matcha Latte', 2020: 43.3, 2021: 85.8, 2022: 93.7},
+ //         {product: 'Milk Tea', 2020: 83.1, 2021: 73.4, 2022: 55.1},
+ //         {product: 'Cheese Cocoa', 2020: 86.4, 2021: 65.2, 2022: 82.5},
+ //         {product: 'Walnut Brownie', 2020: 72.4, 2021: 53.9, 2022: 39.1}
+ //       ]
+ //     },
+ //     xAxis: {type: 'category'},
+ //     yAxis: {},
+ //
+ //     series: [{type: 'bar'}, {type: 'bar'}, {type: 'bar'}]
+ //   };
+ //   const arrDom = document.getElementById('arr');
+ //   const arrChart = echarts.init(arrDom);
+ //   arrChart.setOption(arrOption);
+ //
+ // },*/
 
 }
 </script>
