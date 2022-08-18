@@ -34,6 +34,7 @@
 
     <el-card class="box-card1" style="margin-top:10px">
       <div>
+
         <span>销售统计</span>
       </div>
       <div>
@@ -213,10 +214,12 @@ export default {
       this.axios.get('http://localhost:9091/sales/static/goodsSale').then(function (resp) {
         if (resp.data.code == 20000) {
           let lists = resp.data.data;
+          console.log("list",lists)
           for (var i = 0; i <lists.length; i++) {
             values.push(lists[i].value);
             names.push(lists[i].name)
           }
+
           // 绘制图表
           myChart.setOption({
             xAxis: {
@@ -229,33 +232,86 @@ export default {
             series: [
               {
                 data:values,
-                type: 'line',
-                smooth: true
-              },
-              {
-                data: values,
-                type: 'bar',
-                showBackground: true,
-                backgroundStyle: {
-                  color: 'rgba(180, 180, 180, 0.2)'
-                }
+                type: 'line'
               }
             ]
           });
 
         }
       })
-    },*/
+
+    },
   },
   mounted(){
     this.initCharts1();
-
-  /*  this.initCharts2();*/
   },
   // methods:{
+  //   admin1(){
+  //     this.$router.push('/admin1');
+  //   },
+  //   admins(){
+  //     this.$router.push('/admins');
+  //   },
+  //   goods(){
+  //     this.$router.push('/goods');
+  //   },
+  //   purchase(){
+  //     this.$router.push('/purchase');
+  //   },
   //
   // },
   // mounted() {
+  //   this.initCharts();
+  //   //柱形图
+  //   let option = {
+  //     xAxis: {
+  //       type: 'category',
+  //       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+  //     },
+  //     yAxis: {
+  //       type: 'value'
+  //     },
+  //     series: [
+  //       {
+  //         data: [120, 200, 150, 80, 70],
+  //         type: 'line'
+  //       },
+  //       {
+  //         data: [120, 200, 150, 80, 70],
+  //         type: 'bar'
+  //       },
+  //     ]
+  //   };
+  //   const chartDom = document.getElementById('main');
+  //   const myChart = echarts.init(chartDom);
+  //   //获取后端数据
+  //   // this.axios.get("http://localhost:9091/echarts/example").then(res=>{
+  //   //   console.log("res:"+res.data)
+  //   //   option.xAxis.data=res.data.x;
+  //   //   option.series[0].data=res.data.y;
+  //   //   option.series[1].data=res.data.y;
+  //   //   myChart.setOption(option)
+  //   // })
+  //
+  //   myChart.setOption({
+  //     series: [
+  //       {
+  //         label: {
+  //           show: this.isShownbr,
+  //         }
+  //       },
+  //       {
+  //         label: {
+  //           show: this.isShownbr,
+  //         }
+  //       },
+  //     ]
+  //   });
+  //   myChart.setOption(option);
+  //   // console.log("op:",this.option.xAxis.data)
+  //   // console.log("option:",this.option.map(r=>r.xAxis))
+  //
+  //
   //   // 饼图
   //   const pieOption = {
   //     title: {
