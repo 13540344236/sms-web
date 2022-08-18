@@ -1,8 +1,8 @@
 <!--注册页面-->
 <template>
-  <div>
+  <div id="logo">
     <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer">
-      <h3 class="loginTitle">用户注册</h3>
+      <h3 class="loginTitle"  style="color: white; text-align: center ">用户注册</h3>
       <!--      姓名-->
       <el-form-item prop="name">
         <el-input type="text" auto-complete="false" v-model="loinForm.name" placeholder="请输入真实姓名"></el-input>
@@ -40,6 +40,7 @@
 <script>
 export default {
   name: "register",
+  name1:"logo",
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -158,10 +159,10 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin:200px;
+  margin: 100px 200px 600px 530px;
   width: 420px;
   padding: 10px 30px 10px 30px;
-  background: #fff;
+  background: rgba(255,0,0,0);
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 }
@@ -174,6 +175,13 @@ export default {
 .loginTitle {
   margin: 20px auto 15px auto;
   text-align: left;
+}
+#logo {
+  background: url("../assets/img.jpg");
+  background-size: 100% 100%;
+  height: 100%;
+  position: fixed;
+  width: 100%;
 }
 
 </style>

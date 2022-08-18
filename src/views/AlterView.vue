@@ -1,8 +1,8 @@
 <!--找回密码-->
 <template>
-  <div>
+  <div id="logo">
     <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer">
-      <h3 class="loginTitle">找回密码</h3>
+      <h3 class="loginTitle"  style="color: white; text-align: center ">找回密码</h3>
       <!--      账号-->
       <el-form-item prop="username">
         <el-input type="text" auto-complete="false" v-model="loinForm.username" placeholder="请输手机号"></el-input>
@@ -37,6 +37,7 @@
 <script>
 export default {
   name: "alter",
+  name1:"logo",
   data() {
 
     var validatePass = (rule, value, callback) => {
@@ -141,10 +142,10 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin:200px;
+  margin: 100px 200px 600px 530px;
   width: 420px;
   padding: 10px 30px 10px 30px;
-  background: #fff;
+  background: rgba(255,0,0,0);
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 }
@@ -162,4 +163,13 @@ export default {
   display: flex;
   justify-content: center;
 }
+
+#logo {
+  background: url("../assets/img.jpg");
+  background-size: 100% 100%;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+}
+
 </style>

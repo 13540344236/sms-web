@@ -1,8 +1,8 @@
 <!--登录页面-->
 <template >
-  <div>
+  <div id="logo">
     <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer">
-      <h3 class="loginTitle">欢迎登录超市后台管理系统</h3>
+      <h3 class="loginTitle" style="color: white; text-align: center " >欢迎登录全民超市运营管理平台</h3>
       <!--      账号-->
       <el-form-item prop="username">
         <el-input prefix-icon="el-icon-user" type="text" auto-complete="false" v-model="loinForm.username"
@@ -16,7 +16,7 @@
         <el-form-item prop="code" class="code">
           <el-input type="text" auto-complete="false" v-model="loinForm.code" placeholder="点击图片更换验证码"
                     @keydown.enter.native="submitLogin" style="width:166px;margin-right: 10px "></el-input>
-          <img :src="vcUrl" @click="captcha" width="120px" height="40px" alt=""/>
+          <img :src="vcUrl" @click="captcha"  width="120px" height="40px" alt=""/>
         </el-form-item>
 
 
@@ -40,7 +40,7 @@ let verKey;
 
 export default {
   name: "Login",
-
+  name1:"logo",
   data() {
 
     return {
@@ -80,8 +80,7 @@ export default {
               if (!res) {
                 this.$message.error('登录失败，用户名或密码错误！');
               } else {
-
-                this.$router.push("/sms")
+                this.$router.push("/")
               }
             })
           }
@@ -124,10 +123,10 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin: 200px;
+  margin: 100px 200px 600px 530px;
   width: 420px;
   padding: 10px 30px 10px 30px;
-  background: #fff;
+  background: rgba(255,0,0,0);
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 }
@@ -145,6 +144,13 @@ export default {
 .el-form-item__content {
   display: flex;
   align-items: center;
+}
+#logo {
+  background: url("../assets/img.jpg");
+  background-size: 100% 100%;
+  height: 100%;
+  position: fixed;
+  width: 100%;
 }
 
 </style>

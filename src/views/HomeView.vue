@@ -4,7 +4,7 @@
     <el-header>
       <div style="height: 60px;line-height: 50px;text-align: left;border-bottom:1px solid #B7B7B7;">
         <img src="../assets/logo.png" alt="" style="width: 190px; position: relative;top:8px">
-        <b style="color:black;position: relative;top:-10px ;" class="font" >【后台管理系统】</b>
+        <b style="color:black;position: relative;top:-10px ;" class="font" >【运营管理平台】</b>
         <el-dropdown style="width: 100px;cursor: pointer;float: right;font-size: 15px">
           <div>
             <span slot="">陈鑫</span>
