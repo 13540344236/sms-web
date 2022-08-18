@@ -34,7 +34,7 @@
 
     <el-card class="box-card1" style="margin-top:30px">
       <div>
-        <span>销售量前6名</span>
+        <span>销售量前7名</span>
       </div>
       <div>
         <el-col :span="12">

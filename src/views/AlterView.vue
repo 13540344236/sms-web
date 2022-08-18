@@ -80,7 +80,7 @@ export default {
       };
     },
   methods: {
-    // 登录的点击事件
+    // 点击事件
     submitForm(formName) {
     this.$refs[formName].validate((valid) => {
       if (valid) {
