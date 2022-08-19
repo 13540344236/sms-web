@@ -1,8 +1,8 @@
 <!--找回密码-->
 <template>
   <div id="logo">
-    <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer">
-      <h3 class="loginTitle"  style="color: white; text-align: center ">找回密码</h3>
+    <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer" style="background-color: rgb(255, 255, 255)">
+      <h3 class="loginTitle" style="color:black;" >找回密码</h3>
       <!--      账号-->
       <el-form-item prop="username">
         <el-input type="text" auto-complete="false" v-model="loinForm.username" placeholder="请输手机号"></el-input>
@@ -142,7 +142,7 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin: 100px 200px 600px 530px;
+  margin:  10% 10%;
   width: 420px;
   padding: 10px 30px 10px 30px;
   background: rgba(255,0,0,0);
@@ -151,7 +151,7 @@ export default {
 }
 
 .loginContainer:hover {
-  box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, .2);
+  box-shadow: -12px 12px 2px -1px rgba(255, 255, 255, .50);
 }
 
 /*“返回登录”字体样式*/

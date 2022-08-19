@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 style="margin: 20px 0">库存管理</h3>
+
     <div style="float: left;margin: 11px 0">
       <el-input style="width: 200px"  placeholder="请输入商品名称" @keydown.native.enter="search()" v-model="wd" class="input-with-select"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>

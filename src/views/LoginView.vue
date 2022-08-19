@@ -1,8 +1,8 @@
 <!--登录页面-->
-<template >
+<template>
   <div id="logo">
-    <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer">
-      <h3 class="loginTitle" style="color: white; text-align: center " >欢迎登录全民超市运营管理平台</h3>
+    <el-form :rules="rules" ref="loginForm" :model="loinForm" class="loginContainer" style="background-color: rgb(255, 255, 255)">
+      <h3 class="loginTitle" style="color:black;" >欢迎登录全民超市运营管理平台</h3>
       <!--      账号-->
       <el-form-item prop="username">
         <el-input prefix-icon="el-icon-user" type="text" auto-complete="false" v-model="loinForm.username"
@@ -13,16 +13,26 @@
         <el-input prefix-icon="el-icon-lock" type="password" auto-complete="false" v-model="loinForm.password"
                   placeholder="请输入密码"></el-input>
       </el-form-item>
-        <el-form-item prop="code" class="code">
-          <el-input type="text" auto-complete="false" v-model="loinForm.code" placeholder="点击图片更换验证码"
-                    @keydown.enter.native="submitLogin" style="width:166px;margin-right: 10px "></el-input>
-          <img :src="vcUrl" @click="captcha"  width="120px" height="40px" alt=""/>
-        </el-form-item>
-
-
-      <div>
-        <el-button type="text" @click="alter">忘记密码</el-button>
+      <div >
+        <el-col :span="12">
+          <el-form-item prop="code" class="code">
+            <el-input type="text" auto-complete="false" v-model="loinForm.code" placeholder="点击图片更换验证码"
+                      @keydown.enter.native="submitLogin" style="width:166px;margin-right: 10px "></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <img :src="vcUrl"  @click="captcha" width="120px" height="40px" alt=""/>
+        </el-col>
       </div>
+
+      <el-col>
+        <div>
+          <el-button type="text" @click="alter" style="display: inline-block">忘记密码</el-button>
+        </div>
+      </el-col>
+
+
+
       <el-button type="primary" style="width: 100%" @click="submitLogin">登录</el-button>
       <div>
         <el-button type="text" @click="register">还没有账号?
@@ -40,11 +50,11 @@ let verKey;
 
 export default {
   name: "Login",
-  name1:"logo",
+  name1: "logo",
   data() {
 
     return {
-      vcUrl:'http://localhost:9091/captchas/captcha',
+      vcUrl: 'http://localhost:9091/captchas/captcha',
       captchaUrl: '',
       loinForm: {
         username: '',
@@ -67,7 +77,7 @@ export default {
       if (regMobile.test(this.loinForm.username)) {
         this.$refs['loginForm'].validate((valid) => {
           if (valid) {  // 表单校验合法
-            let url = 'http://localhost:9091/user/login';
+            let url = 'http://localhost:9091/logins/login';
             console.log('url >>> ' + url);
             let data = {
               'username': this.loinForm.username,
@@ -75,12 +85,13 @@ export default {
             };
             console.log('data >>> ');
             console.log(data);
-            this.axios.post(url, data).then(res => {
+            this.axios.post(url,data).then(res => {
+              console.log("res:  ",res)
               console.log("res为", res.data)
-              if (!res) {
-                this.$message.error('登录失败，用户名或密码错误！');
-              } else {
-                this.$router.push("/")
+              if (res.data === false) {
+                  this.$message.error('登录失败，用户名或密码错误！');
+                } else {
+                  this.$router.push("/")
               }
             })
           }
@@ -98,20 +109,20 @@ export default {
     },
     captcha() {
       //点击验证码更新事件
-      this.axios.get('http://localhost:9091/captchas/captcha').then(res=>{
-        console.log("返回的数据为："+res.data.data.image)
+      this.axios.get('http://localhost:9091/captchas/captcha').then(res => {
+        console.log("返回的数据为：" + res.data.data.image)
         this.vcUrl = res.data.data.image
-        console.log("返回的数据为："+res.data.code)
+        console.log("返回的数据为：" + res.data.code)
       });
     },
   },//methods结束
 
-  created(){
+  created() {
     //页面刷新自动生成验证码
-    this.axios.get('http://localhost:9091/captchas/captcha').then(res=>{
-      console.log("返回的数据为："+res.data.data.image)
+    this.axios.get('http://localhost:9091/captchas/captcha').then(res => {
+      console.log("返回的数据为：" + res.data.data.image)
       this.vcUrl = res.data.data.image
-      console.log("返回的数据为："+res.data.code)
+      console.log("返回的数据为：" + res.data.code)
     });
   }
 
@@ -123,16 +134,15 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin: 100px 200px 600px 530px;
+  margin:  10% 10%;
   width: 420px;
   padding: 10px 30px 10px 30px;
-  background: rgba(255,0,0,0);
-  border: 1px solid #eaeaea;
+  background: rgba(255, 0, 0, 0);
   box-shadow: 0 0 25px #cac6c6;
 }
 
 .loginContainer:hover {
-  box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, .2);
+  box-shadow: -12px 12px 2px -1px rgba(255, 255, 255, .50);
 }
 
 /*“系统登录”字体样式*/
@@ -145,8 +155,9 @@ export default {
   display: flex;
   align-items: center;
 }
+
 #logo {
-  background: url("../assets/img.jpg");
+  background-image:  url("../assets/img.jpg");
   background-size: 100% 100%;
   height: 100%;
   position: fixed;

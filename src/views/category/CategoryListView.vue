@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 style="margin: 20px 0">类别管理</h3>
+
     <div style="display: flex">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="类别名">
