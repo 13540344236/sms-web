@@ -142,7 +142,8 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin:  10% 10%;
+  margin:  9% 60%;
+  height: 470px;
   width: 420px;
   padding: 10px 30px 10px 30px;
   background: rgba(255,0,0,0);
