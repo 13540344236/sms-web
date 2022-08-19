@@ -10,8 +10,6 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
         <el-button style="margin-left:20px" type="primary" @click="add">添加类别</el-button>
-        <!--        <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>-->
-        <!--  批量删除  -->
         <el-button
             style="margin-left:20px"
             type="danger" @click="batchDelete"
@@ -20,10 +18,6 @@
     </div>
 
     <div>
-      <!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
-      <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
-      <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
-      <!--            </el-breadcrumb>-->
 
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
@@ -68,21 +62,6 @@
           <el-form-item label="自定义排序号" prop="sort">
             <el-input v-model="ruleForm.sort"></el-input>
           </el-form-item>
-
-          <!--     上传图片     -->
-<!--          <el-form-item label="商品图片" prop="url">-->
-<!--            <el-upload-->
-<!--                action="http://localhost:9091/category/upload"-->
-<!--                name="picFile"-->
-<!--                list-type="picture-card"-->
-<!--                :on-preview="handlePictureCardPreview"-->
-<!--                :on-remove="handleRemove">-->
-<!--              <i class="el-icon-plus"></i>-->
-<!--            </el-upload>-->
-<!--            <el-dialog :visible.sync="dialogVisible">-->
-<!--              <img width="100%" :src="dialogImageUrl" alt="">-->
-<!--            </el-dialog>-->
-<!--          </el-form-item>-->
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -321,11 +300,6 @@ export default {
       });
     },
 
-// 导出报表
-//     exportExcel(){
-//       location.href = "http://localhost:9091/goods/exportExcel"
-//     },
-
 // 分页查询
     pageAll() {
       console.log('pageAll()')
@@ -347,18 +321,6 @@ export default {
       this.pageAll()
     },
 
-
-// 上传图片
-//     handleRemove(file, fileList) {
-//       console.log(file, fileList);
-//       //发请求告诉服务器删除文件夹里面的文件
-//       //得到要删除的文件名
-//       let fileName= file.response;
-//       console.log("文件名:"+fileName);
-//       axios.get("/remove?fileName="+fileName).then(function (response) {
-//         console.log("服务器文件删除完成!");
-//       })
-//     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -367,14 +329,6 @@ export default {
 
 
   created() {
-    /*    console.log('vue created')
-        this.axios.get('http://localhost:9091/goods').then((response) => {
-          if (response.data.code === 20000) {
-            this.tableData = response.data.data;
-          } else {
-            this.$message.error(response.data.message);
-          }
-        })*/
     this.pageAll();
   },
   mounted() {

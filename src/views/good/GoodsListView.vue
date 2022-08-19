@@ -3,32 +3,46 @@
     <h3 style="margin: 20px 0">商品管理</h3>
     <div style="display: flex">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="商品名">
+        <el-form-item>
           <el-input v-model="formInline.name" placeholder="请输入商品名"></el-input>
         </el-form-item>
+
+        <el-form-item>
+          <el-select v-model="formInline.category" filterable placeholder="请选择商品类别" style="margin: 0 10px 0 10px">
+            <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
-          <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
-          <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
-          <!--  批量删除  -->
-          <el-button
-              style="margin-left:20px"
-              type="danger" @click="batchDelete"
-              :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+
+        <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+        <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
+        <!--  批量删除  -->
+        <el-button
+            style="margin-left:20px"
+            type="danger" @click="batchDelete"
+            :disabled="this.multipleSelection.length === 0">批量删除
+        </el-button>
       </el-form>
     </div>
 
     <div>
-      <!--            <el-breadcrumb separator-class="el-icon-arrow-right">-->
-      <!--              <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
-      <!--              <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
-      <!--            </el-breadcrumb>-->
+      <!--      <el-breadcrumb separator-class="el-icon-arrow-right">-->
+      <!--        <el-breadcrumb-item :to="{ path: '/sms/goods/list' }">首页</el-breadcrumb-item>-->
+      <!--        <el-breadcrumb-item>商品管理</el-breadcrumb-item>-->
+      <!--      </el-breadcrumb>-->
 
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column  label="商品图片"width="80">
+        <el-table-column label="商品图片" width="80">
           <template slot-scope="scope">
             <el-image
                 style="width: 60px; height: 60px"
@@ -66,17 +80,12 @@
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
 
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="商品类别" prop="category">
+            <el-select v-model="ruleForm.category" placeholder="请选择商品类别" style="width: 100%">
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+          </el-form-item>
 
-            <el-form-item label="活动区域" prop="region">
-              <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-
-
-          </el-form>
 
           <el-form-item label="采购价格" prop="purchasePrice">
             <el-input v-model="ruleForm.purchasePrice"></el-input>
@@ -126,7 +135,9 @@
         <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
 
           <el-form-item label="商品类别" prop="category">
-            <el-input v-model="editForm.category"></el-input>
+            <el-select v-model="editForm.category" placeholder="请选择商品类别" style="width: 100%">
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            </el-select>
           </el-form-item>
 
           <el-form-item label="商品名称" prop="name">
@@ -173,6 +184,11 @@
 export default {
   data() {
     return {
+      // 商品类别
+      category: '',
+      options: [],
+
+
       dialogImageUrl: '',
       dialogVisible: false,
       // 勾选的数据
@@ -183,64 +199,78 @@ export default {
       totalCount: 0,
 
       tableData: [],//图片返回url需要使用
-      filelist:[],//图片数组
-      formInline:{
+      filelist: [],//图片数组
+      formInline: {
         name: '',
+        category:''
       },
       input: '',
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
       ruleForm: {
-        id:'',
+        id: '',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice:'',
+        purchasePrice: '',
         category: '',
         lowLimitStock: '',
-        currentStock:'',
-        goodsSpecification:''
+        currentStock: '',
+        goodsSpecification: ''
       },
       editForm: {
-        id:'',
+        id: '',
         url: '',
         name: '',
         salePrice: '',
-        purchasePrice:'',
+        purchasePrice: '',
         category: '',
         lowLimitStock: '',
-        currentStock:'',
-        goodsSpecification:''
+        currentStock: '',
+        goodsSpecification: ''
       },
       rules: {
         name: [
-          { required: true, message: '请输入商品名称', trigger: 'blur' },
-          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+          {required: true, message: '请输入商品名称', trigger: 'blur'},
+          {min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur'}
         ],
         category: [
-          { required: true, message: '请输入商品类别', trigger: 'blur' },
-          { min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+          {required: true, message: '请输入商品类别', trigger: 'blur'},
+          {min: 2, max: 30, message: '长度在 3 到 10 个字符', trigger: 'blur'}
         ],
         salePrice: [
-          { required: true, message: '请输入销售价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
+          {required: true, message: '请输入销售价格', trigger: 'blur'},
+          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
         ],
         purchasePrice: [
-          { required: true, message: '请输入采购价格', trigger: 'blur' },
-          { pattern:/([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur' }
+          {required: true, message: '请输入采购价格', trigger: 'blur'},
+          {pattern: /([1-9]\d*\.?\d*)|(0\.\d*[1-9])/, message: '请输入数字', trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
 //查询商品
-    onSubmit() {
-      this.axios.post('http://localhost:9091/goods/selectByName',this.formInline)
+/*    onSubmit() {
+      this.axios.post('http://localhost:9091/goods/selectByName', this.formInline)
           .then((response) => {
             console.log("canshu", response)
             this.tableData = response.data.data
-            console.log(this.tableData)
           })
+    },*/
+    onSubmit() {
+      this.axios.post('http://localhost:9091/goods/selectByNameOrCategory', this.formInline)
+          .then((response) => {
+            console.log("222", response)
+            this.tableData = response.data.data
+          })
+    },
+
+// 商品类别数据
+    getCategory() {
+      this.axios.get('http://localhost:9091/goods/getCategory').then(res => {
+        this.options = res.data.data;
+      })
     },
 
 //删除商品
@@ -299,7 +329,7 @@ export default {
     },
 
 // 添加商品
-    add(){
+    add() {
       this.dialogFormVisible = true
     },
     submitForm(formName) {
@@ -360,7 +390,7 @@ export default {
     },
 
 // 导出报表
-    exportExcel(){
+    exportExcel() {
       location.href = "http://localhost:9091/goods/exportExcel"
     },
 
@@ -369,7 +399,6 @@ export default {
       console.log('pageAll()')
       this.axios.get('http://localhost:9091/goods/page?pageNum=' + this.pageNum + '&pageSize=' + this.pageSize)
           .then((response) => {
-            console.log(response)
             this.tableData = response.data.data.list
             this.totalCount = response.data.data.totalCount
           })
@@ -391,9 +420,9 @@ export default {
       console.log(file, fileList);
       //发请求告诉服务器删除文件夹里面的文件
       //得到要删除的文件名
-      let fileName= file.response;
-      console.log("文件名:"+fileName);
-      axios.get("/remove?fileName="+fileName).then(function (response) {
+      let fileName = file.response;
+      console.log("文件名:" + fileName);
+      axios.get("/remove?fileName=" + fileName).then(function (response) {
         console.log("服务器文件删除完成!");
       })
     },
@@ -405,15 +434,16 @@ export default {
 
 
   created() {
-/*    console.log('vue created')
-    this.axios.get('http://localhost:9091/goods').then((response) => {
-      if (response.data.code === 20000) {
-        this.tableData = response.data.data;
-      } else {
-        this.$message.error(response.data.message);
-      }
-    })*/
+    /*    console.log('vue created')
+        this.axios.get('http://localhost:9091/goods').then((response) => {
+          if (response.data.code === 20000) {
+            this.tableData = response.data.data;
+          } else {
+            this.$message.error(response.data.message);
+          }
+        })*/
     this.pageAll();
+    this.getCategory();
   },
   mounted() {
     console.log('vue mounted')
