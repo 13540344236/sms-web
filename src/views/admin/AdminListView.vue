@@ -14,49 +14,21 @@
     </div>
 
     <div>
-
       <!--  查询用户  -->
-      <el-dialog title="查询用户" :visible.sync="dialogFormVisibleSelect" width="90%">
-        <el-table  border style="width: 100%;text-align: center">
-          <el-table-column prop="id" label="用户ID" width="100"></el-table-column>
-          <el-table-column prop="staffName" label="用户名称" width="140"></el-table-column>
-          <el-table-column prop="gender" label="用户性别" width="80"></el-table-column>
-          <el-table-column prop="phone" label="用户电话号码" width="140"></el-table-column>
-          <el-table-column prop="idNumber" label="身份证号" width="140"></el-table-column>
-          <el-table-column prop="onDuty" label="是否在岗" width="140"></el-table-column>
-          <el-table-column prop="email" label="邮箱" width="140"></el-table-column>
-          <el-table-column prop="description" label="描述" ></el-table-column>
-          <el-table-column prop="enable" label="是否启用" width="140"></el-table-column>
-          <el-table-column prop="gmtCreate" label="用户入职时间" width="140"></el-table-column>
-          <el-table-column label="操作" width="150">
-            <template slot-scope="scope">
-              <el-button
-                  size="mini"
-                  type="primary"
-                  @click="edit(scope.row)">编辑</el-button>
-              <el-button
-                  size="mini"
-                  type="danger"
-                  @click="openDeleteConfirm(scope.row.id)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-dialog>
-
       <el-table :data="tableData" border style="width: 100%;text-align: center">
 <!--        <el-table-column prop="id" label="用户ID" width="100"></el-table-column>-->
-        <el-table-column prop="username" label="姓名" width="120"></el-table-column>
-        <el-table-column prop="nickname" label="昵称" width="80"></el-table-column>
-        <el-table-column prop="phone" label="登录账号" width="150"></el-table-column>
+        <el-table-column prop="username" label="姓名" width="200"></el-table-column>
+        <el-table-column prop="nickname" label="昵称" width="200"></el-table-column>
+        <el-table-column prop="phone" label="登录账号" width="200"></el-table-column>
 <!--        <el-table-column prop="idNumber" label="身份证号"></el-table-column>-->
 <!--        <el-table-column prop="onDuty" label="是否在岗" width="140"></el-table-column>-->
-        <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
-        <el-table-column prop="role" label="角色" ></el-table-column>
-        <el-table-column prop="enable" label="是否启用" width="120">
+        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="role" label="角色" width="200"></el-table-column>
+        <el-table-column prop="enable" label="是否启用" width="120" >
           <template slot-scope="scope">
             <el-switch
                 v-model="scope.row.enable"
-                @change="handleChangeEnable(scope.$index, scope.row.id, scope.row.enable)"
+                @change="handleChangeEnable(scope.row)"
                 :active-value="1"
                 :inactive-value="0"
                 active-color="#13ce66"
@@ -64,6 +36,7 @@
             </el-switch>
           </template>
         </el-table-column>
+
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
@@ -76,6 +49,7 @@
                 @click="openDeleteConfirm(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
+
       </el-table>
 
       <!--  添加用户  -->
@@ -105,9 +79,6 @@
           <el-form-item label="地址" prop="address">
             <el-input v-model="ruleForm.address"></el-input>
           </el-form-item>
-
-
-
 
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -147,7 +118,7 @@
 
           <el-form-item>
             <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-            <el-button type="primary" @click="handleEdit(ruleForm.id)">确 定</el-button>
+            <el-button type="primary" @click="handleEdit(editForm.id)">确 定</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -181,6 +152,7 @@ export default {
       formInline: {
         id: ''
       },
+      selectData:[],
       tableData: [],
       input:'',
       dialogFormVisible:false,
@@ -215,19 +187,6 @@ export default {
     }
   },
   methods: {
-    /*    loadGoods: function () {
-          console.log('loadGoods()');
-          let url = 'http://localhost:9091/admins';
-          console.log('url = ' + url);
-          this.axios.get(url).then((response) => {
-            let json = response.data;
-            if (json.code === 20000) {
-              this.tableData = json.data;
-            } else {
-              this.$message.error(response.data.message);
-            }
-          })
-        },*/
     //查询
     onSubmit() {
       this.axios.get('http://localhost:9091/users/' + this.formInline.id + '/selectById')
@@ -267,7 +226,7 @@ export default {
       });
     },
 
-// 查询用户
+/*// 查询用户
     select(input){
       this.dialogFormVisibleSelect = true
       this.selects(input)
@@ -291,7 +250,7 @@ export default {
         }
         this.selects();
       });
-    },
+    },*/
 
 // 添加用户
     add(){
@@ -334,17 +293,18 @@ export default {
 
 // 编辑商品
     edit(val){
+      console.log('val',val)
       Object.assign(this.editForm,val)
       this.dialogFormVisibleEdit = true;
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的用户数据');
-      let url = 'http://localhost:9091/users/update'
+      let url = 'http://localhost:9091/users/' + id + '/update'
       this.axios
           // .create({headers: {'Authorization': localStorage.getItem('jwt')}})
           .post(url,this.editForm).then((response) => {
         let json = response.data;
-        console.log(response.data.data)
+        console.log('编辑参数',response.data.data)
         if (json.code === 20000) {
           this.$message({
             message: '编辑用户成功！',
@@ -398,10 +358,10 @@ export default {
           .post(url, formData, config).then(response => {
         let  data = response.status;
         console.log(data)
-        if (response.status == 200) {
+        if (response.status === 200) {
           this.$message('导入成功');
           return;
-          this.loadGoods();
+          this.pageAll();
         }else{
           this.$message("导入失败");
           return;
@@ -415,14 +375,20 @@ export default {
       location.href = "http://localhost:9091/users/exportExcel"
     },
 
-    //是否启用
-    handleChangeEnable(i, id, toState) {
-      let enableText = ['禁用', '启用'];
-      let originState = (toState + 1) % 2;
-      this.$message('启用成功');
-      setTimeout(() => {
-        this.tableData[i].enable = originState;
-      }, 200);
+    //启用事件
+    handleChangeEnable(row) {
+      console.log('row',row);
+      this.axios.post('http://localhost:9091/users/'+row.id+'/update',row).then(res => {
+        console.log("res",res);
+        if (res.data.code === 20000) {
+          this.$message({
+            message: '用户启用成功！',
+            type: 'success'
+          });
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
   },
 

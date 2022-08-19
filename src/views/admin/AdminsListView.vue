@@ -332,7 +332,7 @@ export default {
     },
     handleEdit(id) {
       console.log('将编辑id = ' + id + '的员工数据');
-      let url = 'http://localhost:9091/admins/update'
+      let url = 'http://localhost:9091/admins/'+id+'/update'
       this.axios.post(url,this.ruleForm).then((response) => {
         let json = response.data;
         console.log(response.data.data)
