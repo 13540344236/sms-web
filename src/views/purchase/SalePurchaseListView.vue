@@ -19,7 +19,6 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="商品编号" width="80"></el-table-column>
         <el-table-column prop="name" label="商品名称" width="140"></el-table-column>
         <el-table-column prop="goodsSpecification" label="商品规格" width="140"></el-table-column>
         <el-table-column prop="purchasePrice"  label="采购价格" ></el-table-column>
@@ -79,7 +78,7 @@
       <!--   编辑商品   -->
       <el-dialog title="编辑商品" :visible.sync="dialogFormVisibleEdit" width="50%">
 
-        <el-form :model="editForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+        <el-form :model="editForm" :rules="rules" ref="editForm" label-width="150px" class="demo-ruleForm">
 
           <el-form-item label="商品名称" prop="name">
             <el-input v-model="editForm.name"></el-input>
@@ -294,6 +293,7 @@ export default {
       console.log('将编辑id = ' + id + '的销售数据');
       let url = 'http://localhost:9091/sales/' + id + '/edit'
       this.axios.post(url,this.editForm).then((response) => {
+        console.log("参数",response)
         let json = response.data;
         console.log(response.data.data)
         if (json.code === 20000) {

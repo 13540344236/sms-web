@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="display: flex;margin: 20px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>

@@ -7,13 +7,13 @@
           <el-input v-model="formInline.phone" placeholder="请输入会员电话"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询会员</el-button>
+          <el-button style="margin-left:10px" type="primary" @click="onSubmit">查询会员</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button style="margin-left:5px" type="primary" @click="add">添加会员</el-button>
+          <el-button style="margin-left:10px" type="primary" @click="add">添加会员</el-button>
         </el-form-item>
         <el-button
-            style="margin-left:20px"
+            style="margin-left:10px"
             type="danger" @click="batchDelete"
             :disabled="this.multipleSelection.length === 0">批量删除</el-button>
       </el-form>

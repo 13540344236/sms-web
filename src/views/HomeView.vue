@@ -43,6 +43,7 @@
               <el-menu-item index="/admin1">用户管理</el-menu-item>
               <el-menu-item index="/role">角色管理</el-menu-item>
               <el-menu-item index="/menu">菜单管理</el-menu-item>
+              <el-menu-item index="/log">日志记录</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">

@@ -154,6 +154,15 @@ const routes = [
 
                 }
             },
+            {
+                path: 'log',
+                name:'登录日志',
+                component: () => import('../views/admin/LogListView.vue'),
+                meta: {
+                    title: '登录日志',
+
+                }
+            },
         ]
     },
     {

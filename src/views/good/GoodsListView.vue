@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div style="display: flex">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item>
@@ -22,7 +21,7 @@
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
 
-        <el-button style="margin-left:20px" type="primary" @click="add">添加商品</el-button>
+        <el-button style="margin-left:10px" type="primary" @click="add">添加商品</el-button>
         <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出商品详情</el-button>
         <!--  批量删除  -->
         <el-button

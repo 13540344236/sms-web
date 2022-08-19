@@ -1,13 +1,13 @@
 <template>
   <div>
-
     <div style="display: flex;margin: 20px 0">
       <el-input style="width: 180px" v-model="input" placeholder="请输入内容"></el-input>
       <el-button style="margin-left:20px" type="primary">搜索</el-button>
       <el-button style="margin-left:20px" type="primary" @click="add">添加退货</el-button>
       <el-button style="margin-left:20px" type="primary" @click="exportExcel">导出退货详情</el-button>
       <!--  批量删除  -->
-      <el-button type="danger" @click="batchDelete" :disabled="this.multipleSelection.length === 0">批量删除</el-button>
+      <el-button style="margin-left:20px" type="danger" @click="batchDelete"
+                 :disabled="this.multipleSelection.length === 0">批量删除</el-button>
     </div>
 
     <div>

@@ -1,15 +1,14 @@
 <template>
   <div>
-
     <div style="display: flex">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="类别名">
           <el-input v-model="formInline.name" placeholder="请输入类别名"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button style="margin-left:10px" type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
-        <el-button style="margin-left:20px" type="primary" @click="add">添加类别</el-button>
+        <el-button style="margin-left:10px" type="primary" @click="add">添加类别</el-button>
         <el-button
             style="margin-left:20px"
             type="danger" @click="batchDelete"
@@ -22,10 +21,9 @@
       <el-table :data="tableData" border
                 style="width: 100%;horiz-align: center" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="name" label="类别" width="140"></el-table-column>
-        <el-table-column prop="parentId" label="父级类别" width="140"></el-table-column>
+        <el-table-column prop="name" label="商品类别"></el-table-column>
+        <el-table-column prop="parentId" label="父级类别"></el-table-column>
         <el-table-column prop="depth" label="深度" width="140"></el-table-column>
-        <el-table-column prop="category" label="商品类别" width="140"></el-table-column>
         <el-table-column prop="sort" label="自定义排序号" width="140"></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">

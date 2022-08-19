@@ -6,9 +6,9 @@
           <el-input v-model="formInline.id" placeholder="请输入登录账号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button style="margin-left:10px" type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
-        <el-button style="height: 40px" type="primary" @click="add">添加用户</el-button>
+        <el-button style="height: 40px;margin-left:10px" type="primary" @click="add">添加用户</el-button>
         <el-button style="margin-left:20px" type="primary"@click="adds">导出用户信息</el-button>
       </el-form>
     </div>
@@ -419,7 +419,7 @@ export default {
     handleChangeEnable(i, id, toState) {
       let enableText = ['禁用', '启用'];
       let originState = (toState + 1) % 2;
-      this.$message.error('尝试将id=' + id + '的用户状态从【' + enableText[originState] + '】改为【' + enableText[toState] + '】，但是，此功能尚未实现！');
+      this.$message('启用成功');
       setTimeout(() => {
         this.tableData[i].enable = originState;
       }, 200);

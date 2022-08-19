@@ -6,9 +6,9 @@
           <el-input v-model="formInline.name" placeholder="请输入菜单名"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button style="margin-left:10px" type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
-        <el-button style="margin-left:20px" type="primary" @click="add">添加主菜单</el-button>
+        <el-button style="margin-left:10px" type="primary" @click="add">添加主菜单</el-button>
         <!--  批量删除  -->
         <el-button
             style="margin-left:20px"
@@ -20,7 +20,7 @@
     <div>
       <el-table :data="tableData" border
                 style="width: 100%"
-                row-key="id" default-expand-all
+                row-key="id"
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="name" label="菜单名称"></el-table-column>
