@@ -89,8 +89,11 @@
 <!--面包屑-->
              <el-col :span="20">
                <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 15px;  line-height: 70px; display:flex ">
-                 <el-breadcrumb-item v-for="item in breadList" :key="item.path" :to="item.path">{{ item.meta.title }}</el-breadcrumb-item>
-               </el-breadcrumb>
+                   <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                   <el-breadcrumb-item>{{this.$router.currentRoute.name}}</el-breadcrumb-item>
+                   <el-breadcrumb-item v-if="this.$router.currentRoute.path!=='/' &&this.$router.currentRoute.path!=='/statistice'">{{this.$router.currentRoute.meta}}</el-breadcrumb-item>
+
+                 </el-breadcrumb>
              </el-col>
 
             </div>
@@ -111,15 +114,6 @@
 <script>
 export default {
   name: 'Home',
-  computed:{
-    breadList(){
-      return this.$route.matched
-    }
-  },
-  mounted() {
-    this.$route.fullPath.split('/')
-  },
-
   data() {
     const item = {};
     return {
@@ -154,6 +148,7 @@ export default {
 </script>
 <style>
 .font {
-  font-family: "PingFang SC", sans-serif;
+  font-size: 20px;
+  font-family: 华文楷体,serif;
 }
 </style>

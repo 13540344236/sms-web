@@ -89,9 +89,9 @@ export default {
         return false;
       }
       this.axios.get("http://localhost:9091/sms/checkSmsCode?phoneNumber="+ this.loinForm.username+"&loinForm.code"+this.loinForm.code).then(function (response){
-        if (response.data.code == 1){
+        if (response.data.code === 1){
           alert("短信验证成功")
-        }else if (response.data.code == 2){
+        }else if (response.data.code === 2){
           alert("输入验证码不正确")
         }
       })

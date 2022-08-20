@@ -45,16 +45,13 @@
 
 <script>
 
-let verKey;
-// 获取验证码
-
 export default {
   name: "Login",
   name1: "logo",
   data() {
 
     return {
-      vcUrl: 'http://localhost:9091/captchas/captcha',
+      vcUrl: '',
       captchaUrl: '',
       loinForm: {
         username: '',
@@ -71,31 +68,44 @@ export default {
   },
   methods: {
     // 登录的点击事件
-    submitLogin() {
+    submitLogin(url, config) {
       //判断手机号是否合法
       const regMobile = /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/;
       if (regMobile.test(this.loinForm.username)) {
-        this.$refs['loginForm'].validate((valid) => {
-          if (valid) {  // 表单校验合法
-            let url = 'http://localhost:9091/logins/login';
-            console.log('url >>> ' + url);
-            let data = {
-              'username': this.loinForm.username,
-              'password': this.loinForm.password
-            };
-            console.log('data >>> ');
-            console.log(data);
-            this.axios.post(url,data).then(res => {
-              console.log("res:  ",res)
-              console.log("res为", res.data)
-              if (res.data === false) {
-                  this.$message.error('登录失败，用户名或密码错误！');
-                } else {
-                  this.$router.push("/")
-              }
-            })
-          }
-        });
+        // 获取验证码
+        this.axios.get('http://localhost:9091/captchas/captcha').then(function (resp){
+          let verKey = resp.data.key;
+          console.log("asas:",verKey)
+        },)
+        // let code={'code':this.loinForm.code,}
+        // this.axios.post('http://localhost:9091/captchas/verification',{verKey:verKey,verCode:code},function (data){
+              // if (data){
+              //   this.$message.error("验证码错误请重新输入")
+              // } else {
+                //用户名密码判断
+                this.$refs['loginForm'].validate((valid) => {
+                  if (valid) {  // 表单校验合法
+                    let url = 'http://localhost:9091/logins/login';
+                    console.log('url >>> ' + url);
+                    let data = {
+                      'username': this.loinForm.username,
+                      'password': this.loinForm.password
+                    };
+                    console.log('data >>> ');
+                    console.log(data);
+                    this.axios.post(url,data).then(res => {
+                      console.log("res:  ",res)
+                      console.log("res为", res.data)
+                      if (res.data === false) {
+                        this.$message.error('登录失败，用户名或密码错误！');
+                      } else {
+                        this.$router.push("/")
+                      }
+                    })
+                  }
+                });
+            //   }
+            // })
       } else {
         alert("手机号格式不正确")
         return;
@@ -110,9 +120,9 @@ export default {
     captcha() {
       //点击验证码更新事件
       this.axios.get('http://localhost:9091/captchas/captcha').then(res => {
-        console.log("返回的数据为：" + res.data.data.image)
+        console.log("返回的数据为1：" + res.data.data.image)
         this.vcUrl = res.data.data.image
-        console.log("返回的数据为：" + res.data.code)
+        console.log("返回的数据为2：" + res.data.code)
       });
     },
   },//methods结束
@@ -120,9 +130,9 @@ export default {
   created() {
     //页面刷新自动生成验证码
     this.axios.get('http://localhost:9091/captchas/captcha').then(res => {
-      console.log("返回的数据为：" + res.data.data.image)
+      console.log("返回的数据为3：" + res.data.data.image)
       this.vcUrl = res.data.data.image
-      console.log("返回的数据为：" + res.data.code)
+      console.log("返回的数据为4：" + res.data.code)
     });
   }
 
@@ -134,7 +144,7 @@ export default {
 .loginContainer {
   border-right: 50px;
   background-clip: padding-box;
-  margin:  9% 60%;
+  margin:  10% 60%;
   height: 470px;
   width: 420px;
   padding: 10px 30px 10px 30px;
